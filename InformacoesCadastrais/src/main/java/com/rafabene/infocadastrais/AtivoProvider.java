@@ -14,7 +14,6 @@ public class AtivoProvider {
     
     private File arquivo = null;
 
-
     public void setArquivo(@Observes @RuntimeStart Config config){
         this.arquivo = config.getValue("arquivo", File.class);
         if (!arquivo.exists()){
