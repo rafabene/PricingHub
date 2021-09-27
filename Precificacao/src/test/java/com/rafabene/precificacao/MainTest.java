@@ -29,17 +29,63 @@ class MainTest {
     }
 
     @Test
-    void testHelloWorld() {
+    void testObterPrecoVazio() {
         Client client = ClientBuilder.newClient();
 
-        JsonObject jsonObject = client
+        Response resposta = client
                 .target(serverUrl)
-                .path("greet")
+                .path("preco/B")
                 .request()
-                .get(JsonObject.class);
-        Assertions.assertEquals("Hello World!", jsonObject.getString("message"),
-                "default message");
+                .get(Response.class);
+        Assertions.assertEquals(204, resposta.getStatus());
+    }
 
+    @Test
+    void testObterPrecoCodigoErrado() {
+        Client client = ClientBuilder.newClient();
+
+        Response resposta = client
+                .target(serverUrl)
+                .path("preco/MX")
+                .request()
+                .get(Response.class);
+        Assertions.assertEquals(406, resposta.getStatus());
+    }
+
+    @Test
+    void testSetarPrecoCodigoErrado() {
+        Client client = ClientBuilder.newClient();
+
+        Response resposta = client
+                .target(serverUrl)
+                .path("preco/MX")
+                .request()
+                .put(Entity.text("1.0"));
+        Assertions.assertEquals(406, resposta.getStatus());
+    }
+
+    @Test
+    void testSetarPreco() {
+        Client client = ClientBuilder.newClient();
+
+        Response resposta = client
+                .target(serverUrl)
+                .path("preco/MB")
+                .request()
+                .put(Entity.text("1.0"));
+        Assertions.assertEquals(204, resposta.getStatus());
+    }
+
+    @Test
+    void testSetarPrecoNaoNumerico() {
+        Client client = ClientBuilder.newClient();
+
+        Response resposta = client
+                .target(serverUrl)
+                .path("preco/MB")
+                .request()
+                .put(Entity.text("X"));
+        Assertions.assertEquals(500, resposta.getStatus());
     }
 
     @AfterAll

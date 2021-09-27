@@ -26,7 +26,7 @@ class MainTest {
     }
 
     @Test
-    void testHelloWorld() {
+    void testGetAtivos() {
         Client client = ClientBuilder.newClient();
 
         Response response = client

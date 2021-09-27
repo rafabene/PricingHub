@@ -13,6 +13,9 @@
 
    <caching-schemes>
       <near-scheme>
+         <!-- Near cache: A near cache is a hybrid cache; it typically fronts a distributed cache or a remote cache with a local cache.
+            Link: https://docs.oracle.com/en/middleware/standalone/coherence/14.1.1.0/develop-applications/introduction-coherence-caches.html#GUID-5C066CC9-575F-4D7D-9D53-7BB674D69FD1
+         -->
          <scheme-name>near</scheme-name>
          <front-scheme>
             <local-scheme/>

@@ -16,7 +16,7 @@ import io.helidon.microprofile.cdi.RuntimeStart;
 public class StartupCache {
 
 
-    public void setArquivo(@Observes @RuntimeStart Object o){
+    public void startCacheCluster(@Observes @RuntimeStart Object o){
         CacheFactory.ensureCluster();
     }
     

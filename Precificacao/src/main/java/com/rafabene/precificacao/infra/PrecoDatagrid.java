@@ -9,12 +9,16 @@ import com.tangosol.net.NamedCache;
 @RequestScoped
 public class PrecoDatagrid implements RepositorioPreco{
 
-    private static final String CACHE_NAME = "precos";
+    private NamedCache<String, Double> precos = CacheFactory.getCache("precos");
 
     @Override
     public void atualizaPreco(String codigo, Double preco) {
-        NamedCache<Object, Object> precos = CacheFactory.getCache(CACHE_NAME);
         precos.put(codigo, preco);
+    }
+
+    @Override
+    public Double getPreco(String codigo) {
+        return precos.get(codigo);
     }
     
 }
