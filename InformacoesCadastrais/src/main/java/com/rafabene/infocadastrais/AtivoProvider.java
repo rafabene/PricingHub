@@ -14,6 +14,11 @@ public class AtivoProvider {
     
     private File arquivo = null;
 
+    /** 
+        A configuração é lida durante a inicialização da aplicação 
+        para verificação para verificar se o arquivo existe mesmo 
+        antes da primeira requisição
+    */
     public void setArquivo(@Observes @RuntimeStart Config config){
         this.arquivo = config.getValue("arquivo", File.class);
         if (!arquivo.exists()){
