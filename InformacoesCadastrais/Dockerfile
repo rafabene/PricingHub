@@ -13,6 +13,7 @@ RUN mvn package -Dmaven.test.skip -Declipselink.weave.skip
 # Do the Maven build!
 # Incremental docker builds will resume here when you change sources
 ADD src src
+ADD ativo.txt ativo.txt
 RUN mvn package -DskipTests
 RUN echo "done!"
 
@@ -21,8 +22,10 @@ FROM openjdk:11-jre-slim
 WORKDIR /helidon
 
 # Copy the binary built in the 1st stage
+COPY --from=build /helidon/ativo.txt ./
 COPY --from=build /helidon/target/infocadastrais.jar ./
 COPY --from=build /helidon/target/libs ./libs
+
 
 CMD ["java", "-jar", "infocadastrais.jar"]
 
