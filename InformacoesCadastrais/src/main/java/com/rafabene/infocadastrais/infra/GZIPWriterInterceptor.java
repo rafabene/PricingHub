@@ -16,7 +16,7 @@ public class GZIPWriterInterceptor implements WriterInterceptor {
 
     @Override
     public void aroundWriteTo(WriterInterceptorContext context)throws IOException, WebApplicationException {
-
+        
     	MultivaluedMap<String,Object> headers = context.getHeaders();
     	headers.add("Content-Encoding", "gzip");
 

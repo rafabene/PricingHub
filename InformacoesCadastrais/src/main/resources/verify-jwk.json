@@ -1,0 +1,12 @@
+{
+    "keys": [
+        {
+            "kty": "RSA",
+            "e": "AQAB",
+            "use": "sig",
+            "kid": "pricing-hub",
+            "alg": "RS256",
+            "n": "qjw9n0Z-7YJrKiAXKc9CLn56LGkNCejvwxOJnBH2aNPmzRLVRJH0qNrWPpaMV45nzTHR5xKWnNm23J253T_j-WfLYjHGrosaphjQ1kzL94BVRtym5EIxYHDxOiPFyi9Bxw6i-y8Pu3qmznVzmshoqUk8PNAHnwVftb_O0HbcD7jf_wlD5TXu4ObOx1VAEX4wr0-LbK56dQzb5xcBD6LDHGShoWKD3TU_o_lE1zoCuMrEeevC-XOMsCbQFVSBi25fw2vH7Evs2OSJfmR5gFwJRaXUDtyjMbAVz1LpqLls4t7GIOaM8GV_dlorX9Z6R3-IRBSIE5ysu_4aU5ORKOjIWw"
+        }
+    ]
+}

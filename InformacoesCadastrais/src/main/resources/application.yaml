@@ -1,0 +1,25 @@
+#Segurança
+# Claims Creation: http://jwtbuilder.jamiekurtz.com/
+# Keys Generator: https://mkjwk.org/
+# JWT Generator: https://dinochiesa.github.io/jwt/
+# JWT Validator: https://jwt.io/
+# Example Token: eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJwcm9jZXNzYWRvciIsImlhdCI6MTYzMzAzNTI4NiwiZXhwIjoxNjY0NTkyNzc4LCJhdWQiOiJpbmZvY2FkYXN0cmFpcyIsInN1YiI6InJhZmFiZW5lQGdtYWlsLmNvbSIsInVwbiI6IlByb2Nlc3NhZG9yIiwiZ3JvdXBzIjpbInNlcnZpY2UiLCJkb3dubG9hZCJdfQ.f42fA_rJ0RYVsctQAn6lt8zDSA8vfc9IGe4hc4Uhm0CC0sp8cBYG-_SmVM8pxO5n1JrxxkKZxPo_rusOTCxsAfPeZg-EycK6f8F-rwqtJph-SD08S7TBrfUSs2jHE_NxUPMH4vggvNBuc9qmCSsZu2adGAL2VpQhFCfcSHWSW_0mbCjqBAKrjUg6qtMedwR6xxZhFz0xw1UgKJByREUvrFYEN2RyMpY6y6K42kOn6tq0f_sbB8JUAeAHf75SfhEv74UfVLXGcXi19544a5gwxXhiayt9a_j1RRVjhD-6CEmORjcta8K-rQkaQNdsLBbFwHbNtcsSx4krkGZiu7cyAA
+
+mp.jwt.verify.publickey.location: "verify-jwk.json"
+#mp.jwt.verify.issuer: "procesador"
+
+security:
+  jersey.analyzers:
+    mp-jwt-auth:
+      auth-method-mapping:
+        - key: "MP-JWT"
+          provider: "mp-jwt-auth"
+  providers:
+    - mp-jwt-auth:
+        # Token extraction
+        atn-token:
+          # Expected audience (if not defined, any audience is accepted - security issue...)
+          #jwt-audience: "audience.application.id"
+          default-key-id: "pricing-hub"
+          verify-signature: true
+    - abac:

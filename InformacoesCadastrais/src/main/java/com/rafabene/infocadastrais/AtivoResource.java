@@ -7,6 +7,8 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -17,9 +19,9 @@ import com.rafabene.infocadastrais.infra.Compress;
 
 import org.glassfish.jersey.server.ChunkedOutput;
 
-
 @Path("/ativos")
 @RequestScoped
+@PermitAll
 public class AtivoResource {
 
     @Inject
@@ -28,18 +30,20 @@ public class AtivoResource {
     @GET
     @Produces("text/plain")
     @Compress
+    @RolesAllowed("download")
     public ChunkedOutput<String> getArquivoAtivos() {
         final ChunkedOutput<String> output = new ChunkedOutput<String>(String.class);
-        new Thread(){
+        new Thread() {
             public void run() {
                 String line = null;
-                try (BufferedReader br = Files.newBufferedReader(Paths.get(ativoProvider.getArquivo().toURI()), Charset.forName("US-ASCII"))){
-                    while ((line = br.readLine()) != null){
-                        output.write(line + "\n");
+                try (BufferedReader br = Files.newBufferedReader(Paths.get(ativoProvider.getArquivo().toURI()),
+                        Charset.forName("US-ASCII"))) {
+                    while ((line = br.readLine()) != null) {
+                        output.write(line + "\r\n");
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
-                }finally{
+                } finally {
                     try {
                         output.close();
                     } catch (IOException e) {
