@@ -7,7 +7,6 @@ import static org.quartz.DateBuilder.THURSDAY;
 import static org.quartz.DateBuilder.TUESDAY;
 import static org.quartz.DateBuilder.WEDNESDAY;
 import static org.quartz.JobBuilder.newJob;
-import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 import static org.quartz.TriggerBuilder.newTrigger;
 
 import java.util.logging.Logger;
@@ -16,15 +15,16 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.tangosol.net.CacheFactory;
+import com.tangosol.net.NamedCache;
+
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.quartz.CronExpression;
-import org.quartz.CronScheduleBuilder;
 import org.quartz.DateBuilder;
+import org.quartz.DateBuilder.IntervalUnit;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
-import org.quartz.DateBuilder.IntervalUnit;
 import org.quartz.impl.StdSchedulerFactory;
 
 import io.helidon.microprofile.cdi.RuntimeStart;
@@ -38,7 +38,18 @@ public class Agendador {
     @ConfigProperty(name = "infocadastrais.retry.segundos")
     private int retrySegundos;
 
+    @Inject
+    @ConfigProperty(name = "infocadastrais.download.url_ativos")
+    private String urlAtivos;
+
+    @Inject
+    @ConfigProperty(name = "infocadastrais.download.token")
+    private String downloadToken;
+
+
     public void agendarDownloadAtivos(@Observes @RuntimeStart Object o) throws SchedulerException{
+        //Inicializa o Cluster antes de tudo
+        CacheFactory.getCache("jobs");
         logger.info("Processador inicializado");
         Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
         scheduler.start();
@@ -47,7 +58,9 @@ public class Agendador {
         JobDetail downloadAtivos =  newJob(DownloadAtivos.class)
             .withIdentity("download", "infoCadastrais")
             .storeDurably(true)
-            .usingJobData(DownloadAtivos.RETRY_KEY, retrySegundos)
+            .usingJobData(DownloadAtivos.RETRY_SECONDS, retrySegundos)
+            .usingJobData(DownloadAtivos.DOWNLOAD_URL, urlAtivos)
+            .usingJobData(DownloadAtivos.TOKEN, downloadToken)
             .build();
 
         //Define o Trigger para uma vez por dia 

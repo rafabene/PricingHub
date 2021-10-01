@@ -17,7 +17,7 @@ public class StartupCache {
 
 
     public void startCacheCluster(@Observes @RuntimeStart Object o){
-        CacheFactory.ensureCluster();
+        CacheFactory.getCache("precos");
     }
     
 }
