@@ -9,11 +9,6 @@ mp.jwt.verify.publickey.location: "verify-jwk.json"
 #mp.jwt.verify.issuer: "procesador"
 
 security:
-  jersey.analyzers:
-    mp-jwt-auth:
-      auth-method-mapping:
-        - key: "MP-JWT"
-          provider: "mp-jwt-auth"
   providers:
     - mp-jwt-auth:
         # Token extraction

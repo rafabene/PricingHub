@@ -1,13 +1,12 @@
 package com.rafabene.infocadastrais;
 
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.Path;
+import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.core.Application;
 
 import org.eclipse.microprofile.auth.LoginConfig;
 
 @LoginConfig(authMethod = "MP-JWT")
-@Path("/")
+@ApplicationScoped
 public class AtivosApplication extends Application{
     
 }

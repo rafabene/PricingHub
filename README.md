@@ -4,6 +4,8 @@
 
 1. Start Minikube
 
+       minikube config set memory 16324
+       minikube config set cpus 6
        minikube -p pricinghub start
        minikube profile pricinghub`
 
