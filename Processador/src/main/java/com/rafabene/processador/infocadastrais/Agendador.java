@@ -16,7 +16,6 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.tangosol.net.CacheFactory;
-import com.tangosol.net.NamedCache;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.quartz.DateBuilder;

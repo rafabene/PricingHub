@@ -1,4 +1,4 @@
-package com.rafabene.processador.recebePedidos;
+package com.rafabene.recebepedidos.rest;
 
 import javax.json.bind.JsonbException;
 import javax.ws.rs.ProcessingException;

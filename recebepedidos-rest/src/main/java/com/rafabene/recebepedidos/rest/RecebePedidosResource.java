@@ -1,4 +1,4 @@
-package com.rafabene.processador.recebePedidos;
+package com.rafabene.recebepedidos.rest;
 
 import java.util.logging.Logger;
 
@@ -10,7 +10,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.rafabene.processador.dominio.vo.OrdemCompra;
 
 @Path("/pedidos")
 public class RecebePedidosResource {

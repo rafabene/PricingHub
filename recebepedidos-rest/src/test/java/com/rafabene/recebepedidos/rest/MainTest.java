@@ -29,54 +29,61 @@ class MainTest {
     }
 
     @Test
-    void testHelloWorld() {
+    void testEmptyBody() {
         Client client = ClientBuilder.newClient();
 
-        JsonObject jsonObject = client
+        Response response = client
                 .target(serverUrl)
-                .path("greet")
+                .path("pedidos")
                 .request()
-                .get(JsonObject.class);
-        Assertions.assertEquals("Hello World!", jsonObject.getString("message"),
-                "default message");
+                .post(null);
+        Assertions.assertEquals(400, response.getStatus(), "Bad request");
 
-        jsonObject = client
-                .target(serverUrl)
-                .path("greet/Joe")
-                .request()
-                .get(JsonObject.class);
-        Assertions.assertEquals("Hello Joe!", jsonObject.getString("message"),
-                "hello Joe message");
-
-        Response r = client
-                .target(serverUrl)
-                .path("greet/greeting")
-                .request()
-                .put(Entity.entity("{\"greeting\" : \"Hola\"}", MediaType.APPLICATION_JSON));
-        Assertions.assertEquals(204, r.getStatus(), "PUT status code");
-
-        jsonObject = client
-                .target(serverUrl)
-                .path("greet/Jose")
-                .request()
-                .get(JsonObject.class);
-        Assertions.assertEquals("Hola Jose!", jsonObject.getString("message"),
-                "hola Jose message");
-
-        r = client
-                .target(serverUrl)
-                .path("metrics")
-                .request()
-                .get();
-        Assertions.assertEquals(200, r.getStatus(), "GET metrics status code");
-
-        r = client
-                .target(serverUrl)
-                .path("health")
-                .request()
-                .get();
-        Assertions.assertEquals(200, r.getStatus(), "GET health status code");
     }
+
+    @Test
+    void testWrongContentType() {
+        Client client = ClientBuilder.newClient();
+        Response response = client
+                .target(serverUrl)
+                .path("pedidos")
+                .request().post(Entity.text(""));
+        Assertions.assertEquals(415, response.getStatus(), "Unsupported Media Type");
+
+    }
+
+    @Test
+    void testWrongJson() {
+        Client client = ClientBuilder.newClient();
+        Response response = client
+                .target(serverUrl)
+                .path("pedidos")
+                .request().post(Entity.json("{\"nomeAtivo\": \"Teste\",\"quantidade\": 1,\"tokenCliente\": \"dasdad}"));
+        Assertions.assertEquals(406, response.getStatus(), "Not acceptable");
+    }
+
+    @Test
+    void testJsonMissingFields() {
+        Client client = ClientBuilder.newClient();
+        Response response = client
+                .target(serverUrl)
+                .path("pedidos")
+                .request().post(Entity.json("{\"nomeAtivo\": \"Teste\",\"quantidade\": 1"));
+        Assertions.assertEquals(406, response.getStatus(), "Not acceptable");
+    }
+
+    @Test
+    void testOk() {
+        Client client = ClientBuilder.newClient();
+        Response response = client
+                .target(serverUrl)
+                .path("pedidos")
+                .request().post(Entity.json("{\"nomeAtivo\": \"Teste\",\"quantidade\": 1,\"tokenCliente\": \"dasdad\"}"));
+        Assertions.assertEquals(202, response.getStatus(), "Accepted");
+    }
+
+
+
 
     @AfterAll
     static void destroyClass() {
