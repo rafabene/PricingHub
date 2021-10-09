@@ -46,6 +46,10 @@
             <artifactId>helidon-microprofile-rest-client</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.glassfish.jersey.ext</groupId>
+            <artifactId>jersey-bean-validation</artifactId>
+          </dependency>
+        <dependency>
             <groupId>com.oracle.coherence.ce</groupId>
             <artifactId>coherence</artifactId>
             <version>21.06</version>

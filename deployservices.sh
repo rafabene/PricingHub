@@ -1,3 +1,4 @@
+eval $(minikube -p pricinghub docker-env)
 docker build -t infocadastrais InformacoesCadastrais/
 docker build -t precificacao Precificacao/
 kubectl create namespace pricinghub || echo "Namespace exists"

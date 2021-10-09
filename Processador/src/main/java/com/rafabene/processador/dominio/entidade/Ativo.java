@@ -1,6 +1,7 @@
 package com.rafabene.processador.dominio.entidade;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class Ativo implements Serializable {
 
@@ -26,6 +27,23 @@ public class Ativo implements Serializable {
 
     public TipoPrecificacao getTipoPrecificacao() {
         return tipoPrecificacao;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof Ativo)) {
+            return false;
+        }
+        Ativo ativo = (Ativo) o;
+        return Objects.equals(id, ativo.id) && Objects.equals(name, ativo.name) && Objects.equals(tipoPrecificacao, ativo.tipoPrecificacao);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, tipoPrecificacao);
     }
 
     @Override

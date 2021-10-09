@@ -31,7 +31,6 @@ public class DownloadAtivos implements Job{
     public static final String RETRY_SECONDS = "infocadastrais.retry.segundos";
     public static final String DOWNLOAD_URL = "infocadastrais.download.url";
     public static final String TOKEN = "infocadastrais.download.token";
-    public static final String JOB = "job";
 
 
     @Override

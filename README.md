@@ -9,12 +9,7 @@
        minikube -p pricinghub start
        minikube profile pricinghub`
 
- 
-2. Point your docker client to minikube
-
-       eval $(minikube -p pricinghub docker-env)
-
-3. Execute the deployment bash file script.
+2. Execute the deployment bash file script.
 
         ./deployservices.sh
 
