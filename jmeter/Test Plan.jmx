@@ -17,13 +17,13 @@
           <boolProp name="LoopController.continue_forever">false</boolProp>
           <intProp name="LoopController.loops">-1</intProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">5</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">5</stringProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">0</stringProp>
         <longProp name="ThreadGroup.start_time">1373789594000</longProp>
         <longProp name="ThreadGroup.end_time">1373789594000</longProp>
         <boolProp name="ThreadGroup.scheduler">true</boolProp>
         <stringProp name="ThreadGroup.duration">60</stringProp>
-        <stringProp name="ThreadGroup.delay">5</stringProp>
+        <stringProp name="ThreadGroup.delay">0</stringProp>
         <stringProp name="TestPlan.comments">Virtual Users Running Scenario 1. 
 Make test last 1 minute (see Scheduler)</stringProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
@@ -77,6 +77,18 @@ Connect to 5s</stringProp>
           </collectionProp>
         </HeaderManager>
         <hashTree/>
+        <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
+          <stringProp name="delimiter">,</stringProp>
+          <stringProp name="fileEncoding">UTF-8</stringProp>
+          <stringProp name="filename">/Users/rafael/projetos/PricingHub/jmeter/ordemCompra.csv</stringProp>
+          <boolProp name="ignoreFirstLine">false</boolProp>
+          <boolProp name="quotedData">false</boolProp>
+          <boolProp name="recycle">true</boolProp>
+          <stringProp name="shareMode">shareMode.all</stringProp>
+          <boolProp name="stopThread">false</boolProp>
+          <stringProp name="variableNames">nomeAtivo, quantidade, token</stringProp>
+        </CSVDataSet>
+        <hashTree/>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Enviar Ordem Pedido" enabled="true">
           <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
@@ -84,9 +96,9 @@ Connect to 5s</stringProp>
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.value">{&#xd;
-	&quot;nomeAtivo&quot;: &quot;Teste&quot;,&#xd;
-	&quot;quantidade&quot;: 1,&#xd;
-	&quot;tokenCliente&quot;: &quot;dasdad&quot;&#xd;
+	&quot;nomeAtivo&quot;: &quot;${nomeAtivo}&quot;,&#xd;
+	&quot;quantidade&quot;: ${quantidade},&#xd;
+	&quot;tokenCliente&quot;: &quot;${token}&quot;&#xd;
 }</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
@@ -98,7 +110,7 @@ Connect to 5s</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
           <stringProp name="HTTPSampler.path">/pedidos</stringProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
-          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
           <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
           <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
@@ -153,7 +165,6 @@ Connect to 5s</stringProp>
         </objProp>
         <stringProp name="TestPlan.comments">For scripting only</stringProp>
         <stringProp name="filename"></stringProp>
-        <boolProp name="ResultCollector.success_only_logging">true</boolProp>
       </ResultCollector>
       <hashTree/>
     </hashTree>

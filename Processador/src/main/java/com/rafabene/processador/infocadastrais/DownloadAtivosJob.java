@@ -24,7 +24,7 @@ import org.quartz.JobExecutionException;
 import org.quartz.TriggerKey;
 
 @DisallowConcurrentExecution
-public class DownloadAtivos implements Job{
+public class DownloadAtivosJob implements Job{
 
     private Logger logger = Logger.getLogger(this.getClass().getName());
 

@@ -54,12 +54,12 @@ public class Agendador {
         scheduler.start();
 
         // Define job instance
-        JobDetail downloadAtivos =  newJob(DownloadAtivos.class)
+        JobDetail downloadAtivos =  newJob(DownloadAtivosJob.class)
             .withIdentity("download", "infoCadastrais")
             .storeDurably(true)
-            .usingJobData(DownloadAtivos.RETRY_SECONDS, retrySegundos)
-            .usingJobData(DownloadAtivos.DOWNLOAD_URL, urlAtivos)
-            .usingJobData(DownloadAtivos.TOKEN, downloadToken)
+            .usingJobData(DownloadAtivosJob.RETRY_SECONDS, retrySegundos)
+            .usingJobData(DownloadAtivosJob.DOWNLOAD_URL, urlAtivos)
+            .usingJobData(DownloadAtivosJob.TOKEN, downloadToken)
             .build();
 
         //Define o Trigger para uma vez por dia 
