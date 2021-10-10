@@ -1,93 +1,79 @@
 
 package com.rafabene.recebepedidos.rest;
 
-import javax.enterprise.inject.se.SeContainer;
-import javax.enterprise.inject.spi.CDI;
-import javax.json.JsonObject;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
+import javax.inject.Inject;
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.MediaType;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
-import io.helidon.microprofile.server.Server;
-
-import org.junit.jupiter.api.AfterAll;
+import org.glassfish.jersey.ext.cdi1x.internal.CdiComponentProvider;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-class MainTest {
+import io.helidon.microprofile.faulttolerance.FaultToleranceExtension;
+import io.helidon.microprofile.metrics.MetricsCdiExtension;
+import io.helidon.microprofile.server.JaxRsCdiExtension;
+import io.helidon.microprofile.server.ServerCdiExtension;
+import io.helidon.microprofile.tests.junit5.AddBean;
+import io.helidon.microprofile.tests.junit5.AddExtension;
+import io.helidon.microprofile.tests.junit5.DisableDiscovery;
+import io.helidon.microprofile.tests.junit5.HelidonTest;
 
-    private static Server server;
-    private static String serverUrl;
+@HelidonTest
+@DisableDiscovery
+@AddExtension(ServerCdiExtension.class)
+@AddExtension(JaxRsCdiExtension.class)
+@AddExtension(CdiComponentProvider.class)
+@AddExtension(FaultToleranceExtension.class)
+@AddExtension(MetricsCdiExtension.class)
+@AddBean(RecebePedidosResource.class)
+@AddBean(ProcessionExceptionMapper.class)
+@AddBean(KafkaDispatcherMock.class)
+public class MainTest {
 
-    @BeforeAll
-    public static void startTheServer() throws Exception {
-        server = Server.create().start();
-        serverUrl = "http://localhost:" + server.port();
-    }
+    @Inject
+    private WebTarget webTarget;
 
     @Test
     void testEmptyBody() {
-        Client client = ClientBuilder.newClient();
-
-        Response response = client
-                .target(serverUrl)
-                .path("pedidos")
-                .request()
-                .post(null);
+        Response response = webTarget.path("/pedidos").request().post(null);
         Assertions.assertEquals(400, response.getStatus(), "Bad request");
 
     }
 
     @Test
     void testWrongContentType() {
-        Client client = ClientBuilder.newClient();
-        Response response = client
-                .target(serverUrl)
-                .path("pedidos")
-                .request().post(Entity.text(""));
+        Response response = webTarget.path("/pedidos").request().post(Entity.text(""));
         Assertions.assertEquals(415, response.getStatus(), "Unsupported Media Type");
 
     }
 
     @Test
     void testWrongJson() {
-        Client client = ClientBuilder.newClient();
-        Response response = client
-                .target(serverUrl)
-                .path("pedidos")
-                .request().post(Entity.json("{\"nomeAtivo\": \"Teste\",\"quantidade\": 1,\"tokenCliente\": \"dasdad}"));
+        Response response = webTarget.path("/pedidos").request()
+                .post(Entity.json("{\"nomeAtivo\": \"Teste\",\"quantidade\": 1,\"tokenCliente\": \"dasdad}"));
         Assertions.assertEquals(406, response.getStatus(), "Not acceptable");
     }
 
     @Test
     void testJsonMissingFields() {
-        Client client = ClientBuilder.newClient();
-        Response response = client
-                .target(serverUrl)
-                .path("pedidos")
-                .request().post(Entity.json("{\"nomeAtivo\": \"Teste\",\"quantidade\": 1"));
+        Response response = webTarget.path("/pedidos").request()
+                .post(Entity.json("{\"nomeAtivo\": \"Teste\",\"quantidade\": 1"));
         Assertions.assertEquals(406, response.getStatus(), "Not acceptable");
     }
 
     @Test
     void testOk() {
-        Client client = ClientBuilder.newClient();
-        Response response = client
-                .target(serverUrl)
-                .path("pedidos")
-                .request().post(Entity.json("{\"nomeAtivo\": \"Teste\",\"quantidade\": 1,\"tokenCliente\": \"dasdad\"}"));
+        Response response = webTarget.path("/pedidos").request()
+                .post(Entity.json("{\"nomeAtivo\": \"Teste\",\"quantidade\": 1,\"tokenCliente\": \"dasdad\"}"));
         Assertions.assertEquals(202, response.getStatus(), "Accepted");
     }
 
-
-
-
-    @AfterAll
-    static void destroyClass() {
-        CDI<Object> current = CDI.current();
-        ((SeContainer) current).close();
+    @Test
+    void testTimeout() {
+        Response response = webTarget.path("/pedidos").request()
+                .post(Entity.json("{\"nomeAtivo\": \"Timeout\",\"quantidade\": 1,\"tokenCliente\": \"dasdad\"}"));
+        Assertions.assertEquals(500, response.getStatus(), "Accepted");
     }
+
 }

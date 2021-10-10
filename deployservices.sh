@@ -1,7 +1,19 @@
-eval $(minikube -p pricinghub docker-env)
-docker build -t infocadastrais InformacoesCadastrais/
-docker build -t precificacao Precificacao/
+#Installing Kafka Operator
+mkdir download
+wget  -P download -c https://github.com/strimzi/strimzi-kafka-operator/releases/download/0.25.0/strimzi-0.25.0.zip
+unzip -o download/strimzi-0.25.0.zip -d download
+sed -i '' 's/namespace: .*/namespace: kafka/' download/strimzi-0.25.0/install/cluster-operator/*RoleBinding*.yaml
 kubectl create namespace pricinghub || echo "Namespace exists"
-kubectl apply -n pricinghub -f InformacoesCadastrais/app.yaml
-kubectl apply -n pricinghub -f Precificacao/app.yaml
+kubectl create namespace kafka || echo "Namespace exists"
+kubectl apply -f download/strimzi-0.25.0/install/cluster-operator/020-RoleBinding-strimzi-cluster-operator.yaml -n kafka
+kubectl apply -f download/strimzi-0.25.0/install/cluster-operator/031-RoleBinding-strimzi-cluster-operator-entity-operator-delegation.yaml -n kafka
+kubectl apply -f download/strimzi-0.25.0/install/cluster-operator/ -n kafka
+kubectl apply -f kafka/kafka-ephemeral-single.yaml -n kafka
+helm upgrade -i kafdrop kafka/kafdrop -n kafka
+
+eval $(minikube -p pricinghub docker-env)
+docker build -t infocadastrais infocadastrais/
+docker build -t precificacao precificacao/
+kubectl apply -n pricinghub -f infocadastrais/app.yaml
+kubectl apply -n pricinghub -f precificacao/app.yaml
 kubectl delete pods -n pricinghub --all --grace-period 0 --force
