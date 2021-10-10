@@ -11,9 +11,15 @@ kubectl apply -f download/strimzi-0.25.0/install/cluster-operator/ -n kafka
 kubectl apply -f kafka/kafka-ephemeral-single.yaml -n kafka
 helm upgrade -i kafdrop kafka/kafdrop -n kafka
 
+#Installing JMeter
+wget -P download -c https://ftp.unicamp.br/pub/apache//jmeter/binaries/apache-jmeter-5.4.1.zip
+unzip -o download/apache-jmeter-5.4.1.zip -d download
+
 eval $(minikube -p pricinghub docker-env)
 docker build -t infocadastrais infocadastrais/
 docker build -t precificacao precificacao/
+docker build -t recebepedidos-rest recebepedidos-rest/
 kubectl apply -n pricinghub -f infocadastrais/app.yaml
 kubectl apply -n pricinghub -f precificacao/app.yaml
+kubectl apply -n pricinghub -f recebepedidos-rest/app.yaml
 kubectl delete pods -n pricinghub --all --grace-period 0 --force
