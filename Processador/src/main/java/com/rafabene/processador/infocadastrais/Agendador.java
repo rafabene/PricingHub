@@ -15,16 +15,24 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.rafabene.processador.dominio.repositorio.RepositorioAtivos;
 import com.tangosol.net.CacheFactory;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.quartz.DateBuilder;
+import org.quartz.JobDataMap;
 import org.quartz.DateBuilder.IntervalUnit;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.impl.StdSchedulerFactory;
+
+import static com.rafabene.processador.infocadastrais.DownloadAtivosJob.RETRY_SECONDS;
+import static com.rafabene.processador.infocadastrais.DownloadAtivosJob.DOWNLOAD_URL;
+import static com.rafabene.processador.infocadastrais.DownloadAtivosJob.TOKEN;
+import static com.rafabene.processador.infocadastrais.DownloadAtivosJob.REPOSITORIO_ATIVOS;
+import static com.rafabene.processador.infocadastrais.DownloadAtivosJob.CONTROLE_ATIVOS_DIA;
 
 import io.helidon.microprofile.cdi.RuntimeStart;
 
@@ -45,21 +53,32 @@ public class Agendador {
     @ConfigProperty(name = "infocadastrais.download.token")
     private String downloadToken;
 
+    @Inject
+    private RepositorioAtivos repositorioAtivos;
+
+    @Inject
+    private ControleAtivosDia controleAtivosDia;
+
 
     public void agendarDownloadAtivos(@Observes @RuntimeStart Object o) throws SchedulerException{
+        logger.info("Processador inicializado");
         //Inicializa o Cluster antes de tudo
         CacheFactory.getCache("jobs");
-        logger.info("Processador inicializado");
         Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
         scheduler.start();
+
+        JobDataMap dataMap = new JobDataMap();
+        dataMap.put(RETRY_SECONDS, retrySegundos);
+        dataMap.put(DOWNLOAD_URL, urlAtivos);
+        dataMap.put(TOKEN, downloadToken);
+        dataMap.put(REPOSITORIO_ATIVOS, repositorioAtivos);
+        dataMap.put(CONTROLE_ATIVOS_DIA, controleAtivosDia);
 
         // Define job instance
         JobDetail downloadAtivos =  newJob(DownloadAtivosJob.class)
             .withIdentity("download", "infoCadastrais")
             .storeDurably(true)
-            .usingJobData(DownloadAtivosJob.RETRY_SECONDS, retrySegundos)
-            .usingJobData(DownloadAtivosJob.DOWNLOAD_URL, urlAtivos)
-            .usingJobData(DownloadAtivosJob.TOKEN, downloadToken)
+            .setJobData(dataMap)
             .build();
 
         //Define o Trigger para uma vez por dia 

@@ -1,8 +1,6 @@
 package com.rafabene.processador.processapedidos;
 
-import java.text.SimpleDateFormat;
 import java.time.Duration;
-import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -12,8 +10,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.rafabene.processador.dominio.vo.OrdemCompra;
-import com.tangosol.net.CacheFactory;
-import com.tangosol.net.NamedCache;
+import com.rafabene.processador.infocadastrais.ControleAtivosDia;
 
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -28,17 +25,17 @@ public class RecebePedidos {
     @ConfigProperty(name = "ordemcompra.brokerServers")
     private String brokerServers;
 
+    @Inject
+    private ControleAtivosDia controleAtivosDia;
+
     private Logger logger = Logger.getLogger(this.getClass().getName());
 
     public void inicializarRecebimentoPedidos(@Observes @RuntimeStart Object o) throws InterruptedException {
-        NamedCache<String, Boolean> jobsControl = CacheFactory.getCache("jobs");
-        SimpleDateFormat sdf = new SimpleDateFormat("YYYYMMdd");
-        String jobHoje = sdf.format(new Date());
+        
         // Aguardando download de Ativos
         while (true) {
-            Boolean executouHoje = jobsControl.get(jobHoje);
-            if (executouHoje == null) {
-                logger.info("Aguardando 10s o download do dia " + jobHoje + " para começar o processamento.");
+            if (!controleAtivosDia.temPrecoDia()) {
+                logger.info("Aguardando 10s o download dos ativos do dia.");
                 Thread.sleep(10 * 1000);
             }
             break;

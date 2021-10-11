@@ -32,4 +32,8 @@ public class RepositorioAtivos {
 
     }
 
+    public void adicionar(Ativo ativo) {
+        ativosEmMemoria.put(ativo.getId(), ativo);
+    }
+
 }
