@@ -19,7 +19,7 @@ public class OrdemCompra {
     }
 
     public void setNomeAtivo(String nomeAtivo) {
-        this.nomeAtivo = nomeAtivo;
+        this.nomeAtivo = nomeAtivo.trim();
     }
 
     public int getQuantidade() {
@@ -35,7 +35,7 @@ public class OrdemCompra {
     }
 
     public void setTokenCliente(String tokenCliente) {
-        this.tokenCliente = tokenCliente;
+        this.tokenCliente = tokenCliente.trim();
     }
 
     @Override

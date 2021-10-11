@@ -18,18 +18,20 @@ public class RepositorioAtivos {
 
     private NamedCache<Long, Ativo> ativosEmMemoria = CacheFactory.getCache("ativos");
 
-    private Logger logger = Logger.getLogger(this.getClass().getName());
-
+    /**
+     * 
+     * @param nome
+     * @return Primeira ocorrencia do Ativo com o nome enviado como parâmetro.
+     */
     public Ativo obtemAtivoPorNome(String nome) {
-        Ativo ativo = null;
         Filter<String> filter = new EqualsFilter<String, String>("getNome", nome);
         for (Iterator<Entry<Long, Ativo>> iter = ativosEmMemoria.entrySet(filter).iterator(); iter.hasNext();) {
-            Map.Entry<Long,Ativo> entry = iter.next();
-            logger.info(entry.getValue().toString());
-            ativo = (Ativo) entry.getValue();
+            Map.Entry<Long, Ativo> entry = iter.next();
+            // Retorna a primeira ocorrência
+            return (Ativo) entry.getValue();
         }
-        return ativo;
-
+        // Se não encontrar, retorna nulo
+        return null;
     }
 
     public void adicionar(Ativo ativo) {

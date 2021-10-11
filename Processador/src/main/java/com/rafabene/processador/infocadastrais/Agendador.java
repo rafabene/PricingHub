@@ -1,5 +1,10 @@
 package com.rafabene.processador.infocadastrais;
 
+import static com.rafabene.processador.infocadastrais.DownloadAtivosJob.CONTROLE_ATIVOS_DIA;
+import static com.rafabene.processador.infocadastrais.DownloadAtivosJob.DOWNLOAD_URL;
+import static com.rafabene.processador.infocadastrais.DownloadAtivosJob.REPOSITORIO_ATIVOS;
+import static com.rafabene.processador.infocadastrais.DownloadAtivosJob.RETRY_SECONDS;
+import static com.rafabene.processador.infocadastrais.DownloadAtivosJob.TOKEN;
 import static org.quartz.CronScheduleBuilder.atHourAndMinuteOnGivenDaysOfWeek;
 import static org.quartz.DateBuilder.FRIDAY;
 import static org.quartz.DateBuilder.MONDAY;
@@ -11,6 +16,7 @@ import static org.quartz.TriggerBuilder.newTrigger;
 
 import java.util.logging.Logger;
 
+import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -20,19 +26,13 @@ import com.tangosol.net.CacheFactory;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.quartz.DateBuilder;
-import org.quartz.JobDataMap;
 import org.quartz.DateBuilder.IntervalUnit;
+import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.impl.StdSchedulerFactory;
-
-import static com.rafabene.processador.infocadastrais.DownloadAtivosJob.RETRY_SECONDS;
-import static com.rafabene.processador.infocadastrais.DownloadAtivosJob.DOWNLOAD_URL;
-import static com.rafabene.processador.infocadastrais.DownloadAtivosJob.TOKEN;
-import static com.rafabene.processador.infocadastrais.DownloadAtivosJob.REPOSITORIO_ATIVOS;
-import static com.rafabene.processador.infocadastrais.DownloadAtivosJob.CONTROLE_ATIVOS_DIA;
 
 import io.helidon.microprofile.cdi.RuntimeStart;
 
@@ -60,7 +60,7 @@ public class Agendador {
     private ControleAtivosDia controleAtivosDia;
 
 
-    public void agendarDownloadAtivos(@Observes @RuntimeStart Object o) throws SchedulerException{
+    public void agendarDownloadAtivos(@Observes @Priority(1) @RuntimeStart Object o) throws SchedulerException{
         logger.info("Processador inicializado");
         //Inicializa o Cluster antes de tudo
         CacheFactory.getCache("jobs");
