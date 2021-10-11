@@ -13,5 +13,5 @@ public interface PrecificadorResource {
     @Path("/preco/{tipo}")
     @Produces("text/plain")
     public Double getPreco(@PathParam("tipo") TipoPrecificacao tipo);
-    
+
 }

@@ -4,6 +4,7 @@ import java.net.URI;
 import java.nio.charset.Charset;
 import java.time.Duration;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import javax.annotation.Priority;
@@ -69,7 +70,7 @@ public class RecebePedidos {
 
     private void obterPedidosKafka() {
         while (true) {
-            ConsumerRecords<String, OrdemCompra> records = consumerOrdemCompra.poll(Duration.ofSeconds(1));
+            ConsumerRecords<String, OrdemCompra> records = consumerOrdemCompra.poll(Duration.ofSeconds(100));
             records.forEach(f -> processaOrdem(f.value()));
         }
     }
@@ -80,14 +81,16 @@ public class RecebePedidos {
             ordemCompraComProblema(ordemCompra, "Não existe ativo cadastrado com o nome " + ordemCompra.getNomeAtivo());
         } else {
             PrecificadorResource precificadorResource = RestClientBuilder.newBuilder()
+                    .connectTimeout(100, TimeUnit.MILLISECONDS).readTimeout(100, TimeUnit.MILLISECONDS)
                     .baseUri(URI.create(precificadorURL)).build(PrecificadorResource.class);
-            Double preco = precificadorResource.getPreco(ativo.getTipoPrecificacao());
-            if (preco == null) {
-                ordemCompraComProblema(ordemCompra,
-                        String.format("Não foi possível obter preço para a ordem %s. Tipo de precificação do ativo: %s",
-                                ordemCompra, ativo.getTipoPrecificacao()));
-            } else {
-                logger.info(preco.toString());
+            try {
+                Double preco = precificadorResource.getPreco(ativo.getTipoPrecificacao());
+                if (preco == null) {
+                    throw new Exception("Preço não disponível no momento da consulta");
+                }
+            } catch (Exception e) {
+                String msg = String.format("Não foi possível obter preço para a ordem %s. Tipo de precificação do ativo: %s. Causa: %s", ordemCompra, ativo.getTipoPrecificacao(), e.getMessage());
+                ordemCompraComProblema(ordemCompra,msg);
             }
         }
     }
