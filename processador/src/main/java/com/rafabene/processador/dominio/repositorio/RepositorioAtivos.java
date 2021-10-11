@@ -3,7 +3,6 @@ package com.rafabene.processador.dominio.repositorio;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 

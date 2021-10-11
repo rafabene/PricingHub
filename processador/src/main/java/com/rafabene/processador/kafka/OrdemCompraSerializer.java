@@ -1,4 +1,4 @@
-package com.rafabene.processador.processapedidos;
+package com.rafabene.processador.kafka;
 
 import java.nio.charset.Charset;
 import java.util.logging.Logger;

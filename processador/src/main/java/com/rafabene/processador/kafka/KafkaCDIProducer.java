@@ -11,8 +11,6 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import com.rafabene.processador.dominio.vo.OrdemCompra;
-import com.rafabene.processador.processapedidos.OrdemCompraDeserializer;
-import com.rafabene.processador.processapedidos.OrdemCompraSerializer;
 
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -37,10 +35,10 @@ public class KafkaCDIProducer {
             properties = new Properties();
             properties.put("bootstrap.servers", brokerServers);
             properties.put("group.id", "princingHub");
-            properties.put("key.deserializer", StringDeserializer.class);
             properties.put("key.serializer", StringSerializer.class);
-            properties.put("value.deserializer", OrdemCompraDeserializer.class);
+            properties.put("key.deserializer", StringDeserializer.class);
             properties.put("value.serializer", OrdemCompraSerializer.class);
+            properties.put("value.deserializer", OrdemCompraDeserializer.class);
         }
         return properties;
     }

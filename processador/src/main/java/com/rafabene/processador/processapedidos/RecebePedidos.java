@@ -37,6 +37,9 @@ public class RecebePedidos {
     private RepositorioAtivos repositorioAtivos;
 
     @Inject
+    private PrecificadorResource precificadorResource;
+
+    @Inject
     private KafkaConsumer<String, OrdemCompra> consumerOrdemCompra;
 
     @Inject
@@ -45,10 +48,6 @@ public class RecebePedidos {
     @Inject
     @ConfigProperty(name = "ordemcompra.dlq")
     private String ordemCompraDLQ;
-
-    @Inject
-    @ConfigProperty(name = "precificador.url")
-    private String precificadorURL;
 
     private Logger logger = Logger.getLogger(this.getClass().getName());
 
@@ -80,9 +79,6 @@ public class RecebePedidos {
         if (ativo == null) {
             ordemCompraComProblema(ordemCompra, "Não existe ativo cadastrado com o nome " + ordemCompra.getNomeAtivo());
         } else {
-            PrecificadorResource precificadorResource = RestClientBuilder.newBuilder()
-                    .connectTimeout(100, TimeUnit.MILLISECONDS).readTimeout(100, TimeUnit.MILLISECONDS)
-                    .baseUri(URI.create(precificadorURL)).build(PrecificadorResource.class);
             try {
                 Double preco = precificadorResource.getPreco(ativo.getTipoPrecificacao());
                 if (preco == null) {

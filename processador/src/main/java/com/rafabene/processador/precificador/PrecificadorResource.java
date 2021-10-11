@@ -7,6 +7,9 @@ import javax.ws.rs.Produces;
 
 import com.rafabene.processador.dominio.entidade.TipoPrecificacao;
 
+import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
+
+@RegisterRestClient(configKey = "precificador")
 public interface PrecificadorResource {
 
     @GET
