@@ -34,7 +34,7 @@ apiVersion: apps/v1
 metadata:
   name: agendamento-pedidos
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: agendamento-pedidos
@@ -50,4 +50,7 @@ spec:
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
+        env:
+        - name: PEDIDO_BROKERSERVERS
+          value: my-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092
 ---

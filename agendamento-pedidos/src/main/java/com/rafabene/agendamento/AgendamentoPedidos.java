@@ -1,17 +1,20 @@
 package com.rafabene.agendamento;
 
-import java.util.List;
-import java.util.Properties;
+import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 
-import com.rafabene.agendamento.dominio.entidade.Pedido;
+import com.rafabene.agendamento.dominio.vo.Pedido;
+import com.tangosol.net.CacheFactory;
+import com.tangosol.net.NamedCache;
 
+import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.common.serialization.StringDeserializer;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import io.helidon.microprofile.cdi.RuntimeStart;
 
@@ -20,22 +23,30 @@ public class AgendamentoPedidos {
 
     private Logger logger = Logger.getLogger(this.getClass().getName());
 
-    @ConfigProperty(name = "pedido.brokerServers")
-    private String brokerServers;
+    NamedCache<String,Map<Integer,Pedido>> pedidosPorClienteMemoria = CacheFactory.getCache("pedidos");
+
+    @Inject
+    private KafkaConsumer<String, Pedido> consumerPedidos;
 
     public void agendarPedidos(@Observes @RuntimeStart Object o) {
         logger.info("Iniciando o agendamento de Pedidos");
+        while(true){
+            ConsumerRecords<String, Pedido> records  = consumerPedidos.poll(Duration.ofMillis(100));
+            records.forEach(cr -> processaPedido(cr.value()));
+        }
 
     }
 
-    private KafkaConsumer<String, Pedido> getKafkaConsumer() {
-        Properties properties = new Properties();
-        properties.put("bootstrap.servers", brokerServers);
-        properties.put("group.id", "princingHub");
-        properties.put("key.deserializer", StringDeserializer.class);
-        KafkaConsumer<String, Pedido> consumer = new KafkaConsumer<String, Pedido>(properties);
-        consumer.subscribe(List.of("ordemCompra"));
-        return consumer;
+    private void processaPedido(Pedido pedido) {
+        Map<Integer,Pedido> pedidosPorCliente = pedidosPorClienteMemoria.get(pedido.getTokenCliente());
+        if (pedidosPorCliente == null){
+            pedidosPorCliente = new HashMap<>();
+            pedidosPorClienteMemoria.put(pedido.getTokenCliente(), pedidosPorCliente);
+        }
+        pedidosPorCliente.put(pedido.hashCode(), pedido);
+        logger.fine(pedidosPorCliente.toString());
     }
+
+
 
 }

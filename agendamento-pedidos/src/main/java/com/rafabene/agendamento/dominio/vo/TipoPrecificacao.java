@@ -1,4 +1,4 @@
-package com.rafabene.agendamento.dominio.entidade;
+package com.rafabene.agendamento.dominio.vo;
 
 public enum TipoPrecificacao {
 

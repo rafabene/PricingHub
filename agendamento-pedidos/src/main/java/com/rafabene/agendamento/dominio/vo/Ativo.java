@@ -1,4 +1,4 @@
-package com.rafabene.agendamento.dominio.entidade;
+package com.rafabene.agendamento.dominio.vo;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -11,9 +11,15 @@ public class Ativo implements Serializable {
 
     private TipoPrecificacao tipoPrecificacao;
 
-    public Ativo(Long id, String name, TipoPrecificacao tipoPrecificacao) {
+    public void setId(Long id) {
         this.id = id;
-        this.nome = name;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public void setTipoPrecificacao(TipoPrecificacao tipoPrecificacao) {
         this.tipoPrecificacao = tipoPrecificacao;
     }
 
@@ -29,7 +35,6 @@ public class Ativo implements Serializable {
         return tipoPrecificacao;
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (o == this)
@@ -38,7 +43,8 @@ public class Ativo implements Serializable {
             return false;
         }
         Ativo ativo = (Ativo) o;
-        return Objects.equals(id, ativo.id) && Objects.equals(nome, ativo.nome) && Objects.equals(tipoPrecificacao, ativo.tipoPrecificacao);
+        return Objects.equals(id, ativo.id) && Objects.equals(nome, ativo.nome)
+                && Objects.equals(tipoPrecificacao, ativo.tipoPrecificacao);
     }
 
     @Override
@@ -48,11 +54,8 @@ public class Ativo implements Serializable {
 
     @Override
     public String toString() {
-        return "{" +
-            " id='" + getId() + "'" +
-            ", name='" + getNome() + "'" +
-            ", tipoPrecificacao='" + getTipoPrecificacao() + "'" +
-            "}";
+        return "{" + " id='" + getId() + "'" + ", name='" + getNome() + "'" + ", tipoPrecificacao='"
+                + getTipoPrecificacao() + "'" + "}";
     }
 
 }
