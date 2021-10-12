@@ -1,27 +1,29 @@
 package com.rafabene.processador.dominio.entidade;
 
 import java.io.Serializable;
-import java.util.Objects;
 import java.util.UUID;
 
 public class Pedido implements Serializable {
 
     private UUID id;
 
+    private String tokenCliente;
+
     private Ativo ativo;
 
     private int quantidadeAtivos;
 
-    private Double preco;
+    private Double precoUnitario;
 
     private Double precoTotal;
 
-    public Pedido(Ativo ativo, int quantidadeAtivos, Double preco) {
+    public Pedido(String tokenCliente, Ativo ativo, int quantidadeAtivos, Double precoUnitario) {
         this.id = UUID.randomUUID();
+        this.tokenCliente = tokenCliente;
         this.ativo = ativo;
         this.quantidadeAtivos = quantidadeAtivos;
-        this.preco = preco;
-        this.precoTotal = preco * quantidadeAtivos;
+        this.precoUnitario = precoUnitario;
+        this.precoTotal = precoUnitario * quantidadeAtivos;
     }
 
     public UUID getId() {
@@ -37,8 +39,8 @@ public class Pedido implements Serializable {
     }
 
 
-    public Double getPreco() {
-        return this.preco;
+    public Double getPrecoUnitario() {
+        return this.precoUnitario;
     }
 
 
@@ -46,34 +48,61 @@ public class Pedido implements Serializable {
         return this.precoTotal;
     }
 
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == this)
-            return true;
-        if (!(o instanceof Pedido)) {
-            return false;
-        }
-        Pedido pedido = (Pedido) o;
-        return Objects.equals(ativo, pedido.ativo) && quantidadeAtivos == pedido.quantidadeAtivos && Objects.equals(preco, pedido.preco) && Objects.equals(precoTotal, pedido.precoTotal);
+    public String getTokenCliente() {
+        return tokenCliente;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ativo, quantidadeAtivos, preco, precoTotal);
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((ativo == null) ? 0 : ativo.hashCode());
+        result = prime * result + ((precoTotal == null) ? 0 : precoTotal.hashCode());
+        result = prime * result + ((precoUnitario == null) ? 0 : precoUnitario.hashCode());
+        result = prime * result + quantidadeAtivos;
+        result = prime * result + ((tokenCliente == null) ? 0 : tokenCliente.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Pedido other = (Pedido) obj;
+        if (ativo == null) {
+            if (other.ativo != null)
+                return false;
+        } else if (!ativo.equals(other.ativo))
+            return false;
+        if (precoTotal == null) {
+            if (other.precoTotal != null)
+                return false;
+        } else if (!precoTotal.equals(other.precoTotal))
+            return false;
+        if (precoUnitario == null) {
+            if (other.precoUnitario != null)
+                return false;
+        } else if (!precoUnitario.equals(other.precoUnitario))
+            return false;
+        if (quantidadeAtivos != other.quantidadeAtivos)
+            return false;
+        if (tokenCliente == null) {
+            if (other.tokenCliente != null)
+                return false;
+        } else if (!tokenCliente.equals(other.tokenCliente))
+            return false;
+        return true;
     }
 
     @Override
     public String toString() {
-        return "{" +
-            " id='" + getId() + "'" +
-            ", ativo='" + getAtivo() + "'" +
-            ", quantidadeAtivos='" + getQuantidadeAtivos() + "'" +
-            ", preco='" + getPreco() + "'" +
-            ", precoTotal='" + getPrecoTotal() + "'" +
-            "}";
+        return "Pedido [ativo=" + ativo + ", id=" + id + ", precoTotal=" + precoTotal + ", precoUnitario="
+                + precoUnitario + ", quantidadeAtivos=" + quantidadeAtivos + ", tokenCliente=" + tokenCliente + "]";
     }
-
 
     
 }

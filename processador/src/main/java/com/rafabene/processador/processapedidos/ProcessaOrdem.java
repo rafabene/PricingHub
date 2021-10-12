@@ -78,7 +78,7 @@ public class ProcessaOrdem {
     private void obterPedidosKafka() {
         while (true) {
             ConsumerRecords<String, OrdemCompra> records = consumerOrdemCompra.poll(Duration.ofSeconds(100));
-            records.forEach(f -> processaOrdem(f.value()));
+            records.forEach(cr -> processaOrdem(cr.value()));
         }
     }
 
@@ -92,7 +92,7 @@ public class ProcessaOrdem {
                 if (preco == null) {
                     throw new Exception("Preço não disponível no momento da consulta");
                 }
-                Pedido p = new Pedido(ativo, ordemCompra.getQuantidade(), preco);
+                Pedido p = new Pedido(ordemCompra.getTokenCliente(), ativo, ordemCompra.getQuantidade(), preco);
                 agendarPedido(p);
             } catch (Exception e) {
                 String msg = String.format(

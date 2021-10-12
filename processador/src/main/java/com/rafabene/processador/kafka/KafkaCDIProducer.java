@@ -39,7 +39,7 @@ public class KafkaCDIProducer {
             logger.info("Configurando Kafka Producers and Consumers");
             properties = new Properties();
             properties.put("bootstrap.servers", brokerServers);
-            properties.put("group.id", "princingHub");
+            properties.put("group.id", "processador");
             properties.put("key.serializer", StringSerializer.class);
             properties.put("key.deserializer", StringDeserializer.class);
         }
