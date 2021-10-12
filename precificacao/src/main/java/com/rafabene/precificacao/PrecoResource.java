@@ -1,5 +1,7 @@
 package com.rafabene.precificacao;
 
+import java.util.logging.Logger;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -16,6 +18,8 @@ public class PrecoResource {
     @Inject
     private RepositorioPreco repositorioPreco;
 
+    private Logger logger = Logger.getLogger(this.getClass().getName());
+
     @Path("/{codigo}")
     @PUT
     public void atualizaPreco(@PathParam("codigo") String codigoAtivo, Double preco){
@@ -26,10 +30,18 @@ public class PrecoResource {
     @GET
     @Path("/{codigo}")
     @Produces("text/plain")
-    public Double getPreco(@PathParam("codigo") String codigoAtivo){
+    public Double getPreco(@PathParam("codigo") String codigoAtivo, String token){
+        validaToken(token);
         validaCodigo(codigoAtivo);
         return repositorioPreco.getPreco(codigoAtivo);
 
+    }
+
+    private void validaToken(String token) {
+        if (token == null || token.isEmpty()){
+            throw new TokenInvalidoException(token);
+        }
+        //TODO Definir quais as regras de validação do Token
     }
 
     private void validaCodigo(String codigoAtivo) {
@@ -41,7 +53,7 @@ public class PrecoResource {
             case "MA":
                 break;
             default:
-                throw new CodigoInvalidoException(String.format("Código '%s' não é válido", codigoAtivo));
+                throw new TokenInvalidoException(codigoAtivo);
         }
     }
 
