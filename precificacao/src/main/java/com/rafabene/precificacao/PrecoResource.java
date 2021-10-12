@@ -4,11 +4,14 @@ import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 
 @Path("/preco")
@@ -29,8 +32,9 @@ public class PrecoResource {
 
     @GET
     @Path("/{codigo}")
-    @Produces("text/plain")
-    public Double getPreco(@PathParam("codigo") String codigoAtivo, String token){
+    @Produces(MediaType.TEXT_PLAIN)
+    @Consumes(MediaType.TEXT_PLAIN)
+    public Double getPreco(@PathParam("codigo") String codigoAtivo,@HeaderParam("token")  String token){
         validaToken(token);
         validaCodigo(codigoAtivo);
         return repositorioPreco.getPreco(codigoAtivo);

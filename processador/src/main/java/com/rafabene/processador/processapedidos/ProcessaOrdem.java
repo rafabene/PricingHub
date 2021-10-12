@@ -1,10 +1,9 @@
 package com.rafabene.processador.processapedidos;
 
-import java.net.URI;
 import java.nio.charset.Charset;
 import java.time.Duration;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.Priority;
@@ -13,6 +12,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.rafabene.processador.dominio.entidade.Ativo;
+import com.rafabene.processador.dominio.entidade.Pedido;
 import com.rafabene.processador.dominio.repositorio.RepositorioAtivos;
 import com.rafabene.processador.dominio.vo.OrdemCompra;
 import com.rafabene.processador.infocadastrais.ControleAtivosDia;
@@ -23,12 +23,12 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.eclipse.microprofile.rest.client.RestClientBuilder;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import io.helidon.microprofile.cdi.RuntimeStart;
 
 @ApplicationScoped
-public class RecebePedidos {
+public class ProcessaOrdem {
 
     @Inject
     private ControleAtivosDia controleAtivosDia;
@@ -37,6 +37,7 @@ public class RecebePedidos {
     private RepositorioAtivos repositorioAtivos;
 
     @Inject
+    @RestClient
     private PrecificadorResource precificadorResource;
 
     @Inject
@@ -46,8 +47,15 @@ public class RecebePedidos {
     private KafkaProducer<String, OrdemCompra> producerOrdemCompra;
 
     @Inject
+    private KafkaProducer<String, Pedido> producerPedido;
+
+    @Inject
     @ConfigProperty(name = "ordemcompra.dlq")
     private String ordemCompraDLQ;
+
+    @Inject
+    @ConfigProperty(name = "pedido.agendamento.topic")
+    private String agendamentoPedidosTopic;
 
     private Logger logger = Logger.getLogger(this.getClass().getName());
 
@@ -80,19 +88,33 @@ public class RecebePedidos {
             ordemCompraComProblema(ordemCompra, "Não existe ativo cadastrado com o nome " + ordemCompra.getNomeAtivo());
         } else {
             try {
-                Double preco = precificadorResource.getPreco(ativo.getTipoPrecificacao());
+                Double preco = precificadorResource.getPreco(ativo.getTipoPrecificacao(), ordemCompra.getTokenCliente());
                 if (preco == null) {
                     throw new Exception("Preço não disponível no momento da consulta");
                 }
+                Pedido p = new Pedido(ativo, ordemCompra.getQuantidade(), preco);
+                agendarPedido(p);
             } catch (Exception e) {
-                String msg = String.format("Não foi possível obter preço para a ordem %s. Tipo de precificação do ativo: %s. Causa: %s", ordemCompra, ativo.getTipoPrecificacao(), e.getMessage());
-                ordemCompraComProblema(ordemCompra,msg);
+                String msg = String.format(
+                        "Não foi possível obter preço para a ordem %s. Tipo de precificação do ativo: %s. Causa: %s",
+                        ordemCompra, ativo.getTipoPrecificacao(), e.getClass().getSimpleName() + ": " + e.getMessage());
+                ordemCompraComProblema(ordemCompra, msg);
             }
         }
     }
 
+    private void agendarPedido(Pedido pedido) {
+        ProducerRecord<String, Pedido> producerRecord = new ProducerRecord<String, Pedido>(agendamentoPedidosTopic,
+                pedido);
+        try {
+            producerPedido.send(producerRecord).get();
+        } catch (InterruptedException | ExecutionException e) {
+            logger.log(Level.SEVERE, "Erro ao agendar Pedido", e);
+        }
+    }
+
     private void ordemCompraComProblema(OrdemCompra ordemCompra, String causa) {
-        logger.info(String.format("Ordem de compra %s descaradatada. Ordem será enviada para DLQ: %s - Motivo: %s",
+        logger.warning(String.format("Ordem de compra %s descaradatada. Ordem será enviada para DLQ: %s - Motivo: %s",
                 ordemCompra, ordemCompraDLQ, causa));
         ProducerRecord<String, OrdemCompra> producerRecord = new ProducerRecord<String, OrdemCompra>(ordemCompraDLQ,
                 ordemCompra);
@@ -100,7 +122,7 @@ public class RecebePedidos {
         try {
             producerOrdemCompra.send(producerRecord).get();
         } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Erro ao informar ordem de comra com problemas", e);
         }
     }
 

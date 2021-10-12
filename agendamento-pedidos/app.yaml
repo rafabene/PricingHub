@@ -17,13 +17,13 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: processador
+  name: agendamento-pedidos
   labels:
-    app: processador
+    app: agendamento-pedidos
 spec:
   type: NodePort
   selector:
-    app: processador
+    app: agendamento-pedidos
   ports:
   - port: 8080
     targetPort: 8080
@@ -32,29 +32,22 @@ spec:
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: processador
+  name: agendamento-pedidos
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: processador
+      app: agendamento-pedidos
   template:
     metadata:
       labels:
-        app: processador
+        app: agendamento-pedidos
         version: v1
     spec:
       containers:
-      - name: processador
-        image: processador
+      - name: agendamento-pedidos
+        image: agendamento-pedidos
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
-        env:
-        - name: INFOCADASTRAIS_DOWNLOAD_URL
-          value: http://infocadastrais.pricinghub.svc.cluster.local:8080
-        - name: ORDEMCOMPRA_BROKERSERVERS
-          value: my-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092
-        - name: PRECIFICADOR_MP-REST-URL
-          value: http://precificacao.pricinghub.svc.cluster.local:8080
 ---

@@ -46,7 +46,7 @@ public class Agendador {
     private int retrySegundos;
 
     @Inject
-    @ConfigProperty(name = "infocadastrais.download.url_ativos")
+    @ConfigProperty(name = "infocadastrais.download.url")
     private String urlAtivos;
 
     @Inject

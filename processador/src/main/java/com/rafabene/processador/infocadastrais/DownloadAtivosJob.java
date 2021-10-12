@@ -78,6 +78,9 @@ public class DownloadAtivosJob implements Job {
                 Ativo ativo = new Ativo(scanner.nextLong(), scanner.next().trim(),
                         TipoPrecificacao.valueOf(scanner.next().trim()));
                 repositorioAtivos.adicionar(ativo);
+            } catch (Exception e){
+                String msg = String.format("Ativo [%s] descartado. Motivo: %s", linha, e.getMessage());
+                logger.warning(msg);
             }
         }
     }
