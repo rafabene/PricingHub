@@ -10,6 +10,7 @@ kubectl apply -f download/strimzi-0.25.0/install/cluster-operator/031-RoleBindin
 kubectl apply -f download/strimzi-0.25.0/install/cluster-operator/ -n kafka
 kubectl apply -f kafka/kafka-ephemeral-single.yaml -n kafka
 helm upgrade -i kafdrop kafka/kafdrop -n kafka
+echo "Aguardando cluster Kafka ficar pronto para poder prosseguir."
 kubectl wait kafka/my-cluster --for=condition=Ready --timeout=300s -n kafka
 kubectl apply -f kafka/topics.yaml -n kafka
 
