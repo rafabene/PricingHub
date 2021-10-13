@@ -10,6 +10,8 @@ kubectl apply -f download/strimzi-0.25.0/install/cluster-operator/031-RoleBindin
 kubectl apply -f download/strimzi-0.25.0/install/cluster-operator/ -n kafka
 kubectl apply -f kafka/kafka-ephemeral-single.yaml -n kafka
 helm upgrade -i kafdrop kafka/kafdrop -n kafka
+kubectl wait kafka/my-cluster --for=condition=Ready --timeout=300s -n kafka
+kubectl apply -f kafka/topics.yaml -n kafka
 
 #Installing JMeter
 wget -P download -c https://ftp.unicamp.br/pub/apache//jmeter/binaries/apache-jmeter-5.4.1.zip

@@ -54,7 +54,7 @@ spec:
         - name: INFOCADASTRAIS_DOWNLOAD_URL
           value: http://infocadastrais.pricinghub.svc.cluster.local:8080
         - name: ORDEMCOMPRA_BROKERSERVERS
-          value: my-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092
+          value: my-cluster-kafka-0.my-cluster-kafka-brokers.kafka.svc:9092
         - name: PRECIFICADOR_MP-REST-URL
           value: http://precificacao.pricinghub.svc.cluster.local:8080
 ---

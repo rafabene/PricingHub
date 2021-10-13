@@ -1,4 +1,4 @@
-package com.rafabene.recebepedidos.rest;
+package com.rafabene.recebepedidos.dominio.vo;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;

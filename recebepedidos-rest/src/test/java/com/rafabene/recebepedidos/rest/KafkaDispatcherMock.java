@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import javax.enterprise.inject.Default;
 
+import com.rafabene.recebepedidos.dominio.vo.OrdemCompra;
 import com.rafabene.recebepedidos.kafka.KafkaService;
 
 @Default

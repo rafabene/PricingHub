@@ -4,7 +4,7 @@ import java.util.concurrent.ExecutionException;
 
 import javax.enterprise.inject.Any;
 
-import com.rafabene.recebepedidos.rest.OrdemCompra;
+import com.rafabene.recebepedidos.dominio.vo.OrdemCompra;
 
 @Any
 public interface KafkaService {

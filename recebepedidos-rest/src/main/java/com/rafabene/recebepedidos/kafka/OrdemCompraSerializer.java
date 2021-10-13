@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 
-import com.rafabene.recebepedidos.rest.OrdemCompra;
+import com.rafabene.recebepedidos.dominio.vo.OrdemCompra;
 
 import org.apache.kafka.common.serialization.Serializer;
 

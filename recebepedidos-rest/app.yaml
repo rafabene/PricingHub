@@ -51,6 +51,6 @@ spec:
         ports:
         - containerPort: 8080
         env:
-        - name: KAFKA_.BOOTSTRAPSERVERS
-          value: my-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092
+        - name: KAFKA_BOOTSTRAPSERVERS
+          value: my-cluster-kafka-0.my-cluster-kafka-brokers.kafka.svc:9092
 ---

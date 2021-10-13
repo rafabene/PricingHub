@@ -7,7 +7,7 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import com.rafabene.recebepedidos.rest.OrdemCompra;
+import com.rafabene.recebepedidos.dominio.vo.OrdemCompra;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.common.serialization.StringSerializer;

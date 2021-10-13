@@ -105,7 +105,7 @@ public class ProcessaOrdem {
 
     private void agendarPedido(Pedido pedido) {
         ProducerRecord<String, Pedido> producerRecord = new ProducerRecord<String, Pedido>(agendamentoPedidosTopic,
-                pedido);
+                pedido.getTokenCliente(), pedido);
         try {
             producerPedido.send(producerRecord).get();
         } catch (InterruptedException | ExecutionException e) {
@@ -117,7 +117,7 @@ public class ProcessaOrdem {
         logger.warning(String.format("Ordem de compra %s descaradatada. Ordem será enviada para DLQ: %s - Motivo: %s",
                 ordemCompra, ordemCompraDLQ, causa));
         ProducerRecord<String, OrdemCompra> producerRecord = new ProducerRecord<String, OrdemCompra>(ordemCompraDLQ,
-                ordemCompra);
+                ordemCompra.getTokenCliente(), ordemCompra);
         producerRecord.headers().add("causa", causa.getBytes(Charset.forName("UTF-8")));
         try {
             producerOrdemCompra.send(producerRecord).get();

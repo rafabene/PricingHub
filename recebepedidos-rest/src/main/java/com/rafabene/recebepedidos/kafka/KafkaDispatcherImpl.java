@@ -5,7 +5,7 @@ import java.util.concurrent.ExecutionException;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
-import com.rafabene.recebepedidos.rest.OrdemCompra;
+import com.rafabene.recebepedidos.dominio.vo.OrdemCompra;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -23,7 +23,7 @@ public class KafkaDispatcherImpl implements KafkaService {
 
     public void enviarOrdemCompra(OrdemCompra ordemCompra) throws InterruptedException, ExecutionException{
         producer.send(
-            new ProducerRecord<String,OrdemCompra>(ordemTopic, ordemCompra)
+            new ProducerRecord<String,OrdemCompra>(ordemTopic, ordemCompra.getTokenCliente(), ordemCompra)
         ).get();
     }
     

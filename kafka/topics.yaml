@@ -1,0 +1,30 @@
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: ordens-compra
+  labels:
+    strimzi.io/cluster: "my-cluster"
+spec:
+  partitions: 3
+  replicas: 1
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: ordens-compra-naoprocessada
+  labels:
+    strimzi.io/cluster: "my-cluster"
+spec:
+  partitions: 3
+  replicas: 1
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: agendamento-pedidos
+  labels:
+    strimzi.io/cluster: "my-cluster"
+spec:
+  partitions: 3
+  replicas: 1
