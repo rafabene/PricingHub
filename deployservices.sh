@@ -24,9 +24,11 @@ docker build -t precificacao precificacao/
 docker build -t recebepedidos-rest recebepedidos-rest/
 docker build -t processador processador/
 docker build -t agendamento-pedidos agendamento-pedidos/
+docker build -t alarmes-funcionais alarmes-funcionais/
 kubectl apply -n pricinghub -f infocadastrais/app.yaml
 kubectl apply -n pricinghub -f precificacao/app.yaml
 kubectl apply -n pricinghub -f recebepedidos-rest/app.yaml
 kubectl apply -n pricinghub -f processador/app.yaml
 kubectl apply -n pricinghub -f agendamento-pedidos/app.yaml
+kubectl apply -n pricinghub -f alarmes-funcionais/app.yaml
 kubectl delete pods -n pricinghub --all --grace-period 0 --force

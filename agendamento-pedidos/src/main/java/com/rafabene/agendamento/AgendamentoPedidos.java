@@ -2,14 +2,16 @@ package com.rafabene.agendamento;
 
 import java.time.Duration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.rafabene.agendamento.dominio.vo.Pedido;
+import com.rafabene.pedido.dominio.vo.Pedido;
 import com.tangosol.net.CacheFactory;
 import com.tangosol.net.NamedCache;
 
@@ -23,7 +25,7 @@ public class AgendamentoPedidos {
 
     private Logger logger = Logger.getLogger(this.getClass().getName());
 
-    NamedCache<String,Map<Integer,Pedido>> pedidosPorClienteMemoria = CacheFactory.getCache("pedidos");
+    private NamedCache<String,Set<Pedido>> pedidosPorClienteMemoria = CacheFactory.getCache("pedidos");
 
     @Inject
     private KafkaConsumer<String, Pedido> consumerPedidos;
@@ -38,12 +40,12 @@ public class AgendamentoPedidos {
     }
 
     private void processaPedido(Pedido pedido) {
-        Map<Integer,Pedido> pedidosPorCliente = pedidosPorClienteMemoria.get(pedido.getTokenCliente());
+        Set<Pedido> pedidosPorCliente = pedidosPorClienteMemoria.get(pedido.getTokenCliente());
         if (pedidosPorCliente == null){
-            pedidosPorCliente = new HashMap<>();
-            pedidosPorClienteMemoria.put(pedido.getTokenCliente(), pedidosPorCliente);
+            pedidosPorCliente = new HashSet<Pedido>();
         }
-        pedidosPorCliente.put(pedido.hashCode(), pedido);
+        pedidosPorCliente.add(pedido);
+        pedidosPorClienteMemoria.put(pedido.getTokenCliente(), pedidosPorCliente);
         logger.fine(pedidosPorCliente.toString());
     }
 

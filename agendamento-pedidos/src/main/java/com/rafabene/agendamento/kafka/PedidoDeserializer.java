@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 
-import com.rafabene.agendamento.dominio.vo.Pedido;
+import com.rafabene.pedido.dominio.vo.Pedido;
 
 import org.apache.kafka.common.serialization.Deserializer;
 

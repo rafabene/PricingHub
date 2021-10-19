@@ -7,7 +7,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import com.rafabene.agendamento.dominio.vo.Pedido;
+import com.rafabene.pedido.dominio.vo.Pedido;
 
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.StringDeserializer;
