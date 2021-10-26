@@ -1,12 +1,23 @@
 package com.rafabene.processador.dominio.vo;
 
+import java.time.LocalDateTime;
+import java.util.Objects;
+
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+
 public class OrdemCompra {
 
+    @NotBlank
     private String nomeAtivo;
 
+    @Min(1)
     private int quantidade;
 
+    @NotBlank
     private String tokenCliente;
+
+    private LocalDateTime timestamp = LocalDateTime.now();
 
     public String getNomeAtivo() {
         return nomeAtivo;
@@ -32,48 +43,40 @@ public class OrdemCompra {
         this.tokenCliente = tokenCliente.trim();
     }
 
+    public LocalDateTime getTimestamp() {
+        return this.timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
+    }
+
+
     @Override
-    public String toString() {
-        return "OrdemCompra [nomeAtivo=" + nomeAtivo + ", quantidade=" + quantidade + ", tokenCliente=" + tokenCliente
-                + "]";
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof OrdemCompra)) {
+            return false;
+        }
+        OrdemCompra ordemCompra = (OrdemCompra) o;
+        return Objects.equals(nomeAtivo, ordemCompra.nomeAtivo) && quantidade == ordemCompra.quantidade && Objects.equals(tokenCliente, ordemCompra.tokenCliente) && Objects.equals(timestamp, ordemCompra.timestamp);
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((nomeAtivo == null) ? 0 : nomeAtivo.hashCode());
-        result = prime * result + quantidade;
-        result = prime * result + ((tokenCliente == null) ? 0 : tokenCliente.hashCode());
-        return result;
+        return Objects.hash(nomeAtivo, quantidade, tokenCliente, timestamp);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        OrdemCompra other = (OrdemCompra) obj;
-        if (nomeAtivo == null) {
-            if (other.nomeAtivo != null)
-                return false;
-        } else if (!nomeAtivo.equals(other.nomeAtivo))
-            return false;
-        if (quantidade != other.quantidade)
-            return false;
-        if (tokenCliente == null) {
-            if (other.tokenCliente != null)
-                return false;
-        } else if (!tokenCliente.equals(other.tokenCliente))
-            return false;
-        return true;
+    public String toString() {
+        return "{" +
+            " nomeAtivo='" + getNomeAtivo() + "'" +
+            ", quantidade='" + getQuantidade() + "'" +
+            ", tokenCliente='" + getTokenCliente() + "'" +
+            ", timestamp='" + getTimestamp() + "'" +
+            "}";
     }
-
-    
-
    
 
 }

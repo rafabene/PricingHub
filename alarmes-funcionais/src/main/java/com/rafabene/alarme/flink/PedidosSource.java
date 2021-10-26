@@ -2,7 +2,6 @@ package com.rafabene.alarme.flink;
 
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.logging.Logger;
 
 import com.rafabene.pedido.dominio.vo.Pedido;

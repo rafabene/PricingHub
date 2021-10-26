@@ -1,6 +1,8 @@
-package com.rafabene.alarme;
+package com.rafabene.alarme.flink;
 
 import java.util.logging.Logger;
+
+import com.rafabene.alarme.Alarme;
 
 import org.apache.flink.streaming.api.functions.sink.SinkFunction;
 

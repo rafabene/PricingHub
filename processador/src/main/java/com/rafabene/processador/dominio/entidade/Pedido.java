@@ -1,6 +1,8 @@
 package com.rafabene.processador.dominio.entidade;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.UUID;
 
 public class Pedido implements Serializable {
@@ -17,13 +19,16 @@ public class Pedido implements Serializable {
 
     private Double precoTotal;
 
-    public Pedido(String tokenCliente, Ativo ativo, int quantidadeAtivos, Double precoUnitario) {
+    private LocalDateTime timestamp;
+
+    public Pedido(String tokenCliente, Ativo ativo, int quantidadeAtivos, Double precoUnitario, LocalDateTime timestamp) {
         this.id = UUID.randomUUID();
         this.tokenCliente = tokenCliente;
         this.ativo = ativo;
         this.quantidadeAtivos = quantidadeAtivos;
         this.precoUnitario = precoUnitario;
         this.precoTotal = precoUnitario * quantidadeAtivos;
+        this.timestamp = timestamp;
     }
 
     public UUID getId() {
@@ -52,56 +57,69 @@ public class Pedido implements Serializable {
         return tokenCliente;
     }
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((ativo == null) ? 0 : ativo.hashCode());
-        result = prime * result + ((precoTotal == null) ? 0 : precoTotal.hashCode());
-        result = prime * result + ((precoUnitario == null) ? 0 : precoUnitario.hashCode());
-        result = prime * result + quantidadeAtivos;
-        result = prime * result + ((tokenCliente == null) ? 0 : tokenCliente.hashCode());
-        return result;
+    public Pedido(UUID id, String tokenCliente, Ativo ativo, int quantidadeAtivos, Double precoUnitario, Double precoTotal, LocalDateTime timestamp) {
+        this.id = id;
+        this.tokenCliente = tokenCliente;
+        this.ativo = ativo;
+        this.quantidadeAtivos = quantidadeAtivos;
+        this.precoUnitario = precoUnitario;
+        this.precoTotal = precoTotal;
+        this.timestamp = timestamp;
+    }
+    public void setId(UUID id) {
+        this.id = id;
+    }
+    public void setTokenCliente(String tokenCliente) {
+        this.tokenCliente = tokenCliente;
+    }
+    public void setAtivo(Ativo ativo) {
+        this.ativo = ativo;
+    }
+    public void setQuantidadeAtivos(int quantidadeAtivos) {
+        this.quantidadeAtivos = quantidadeAtivos;
+    }
+    public void setPrecoUnitario(Double precoUnitario) {
+        this.precoUnitario = precoUnitario;
+    }
+    public void setPrecoTotal(Double precoTotal) {
+        this.precoTotal = precoTotal;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return this.timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
+    public boolean equals(Object o) {
+        if (o == this)
             return true;
-        if (obj == null)
+        if (!(o instanceof Pedido)) {
             return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Pedido other = (Pedido) obj;
-        if (ativo == null) {
-            if (other.ativo != null)
-                return false;
-        } else if (!ativo.equals(other.ativo))
-            return false;
-        if (precoTotal == null) {
-            if (other.precoTotal != null)
-                return false;
-        } else if (!precoTotal.equals(other.precoTotal))
-            return false;
-        if (precoUnitario == null) {
-            if (other.precoUnitario != null)
-                return false;
-        } else if (!precoUnitario.equals(other.precoUnitario))
-            return false;
-        if (quantidadeAtivos != other.quantidadeAtivos)
-            return false;
-        if (tokenCliente == null) {
-            if (other.tokenCliente != null)
-                return false;
-        } else if (!tokenCliente.equals(other.tokenCliente))
-            return false;
-        return true;
+        }
+        Pedido pedido = (Pedido) o;
+        return Objects.equals(id, pedido.id) && Objects.equals(tokenCliente, pedido.tokenCliente) && Objects.equals(ativo, pedido.ativo) && quantidadeAtivos == pedido.quantidadeAtivos && Objects.equals(precoUnitario, pedido.precoUnitario) && Objects.equals(precoTotal, pedido.precoTotal) && Objects.equals(timestamp, pedido.timestamp);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, tokenCliente, ativo, quantidadeAtivos, precoUnitario, precoTotal, timestamp);
     }
 
     @Override
     public String toString() {
-        return "Pedido [ativo=" + ativo + ", id=" + id + ", precoTotal=" + precoTotal + ", precoUnitario="
-                + precoUnitario + ", quantidadeAtivos=" + quantidadeAtivos + ", tokenCliente=" + tokenCliente + "]";
+        return "{" +
+            " id='" + getId() + "'" +
+            ", tokenCliente='" + getTokenCliente() + "'" +
+            ", ativo='" + getAtivo() + "'" +
+            ", quantidadeAtivos='" + getQuantidadeAtivos() + "'" +
+            ", precoUnitario='" + getPrecoUnitario() + "'" +
+            ", precoTotal='" + getPrecoTotal() + "'" +
+            ", timestamp='" + getTimestamp() + "'" +
+            "}";
     }
 
     

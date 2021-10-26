@@ -1,5 +1,9 @@
 package com.rafabene.recebepedidos.kafka;
 
+import java.nio.charset.Charset;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.ExecutionException;
 
 import javax.enterprise.context.RequestScoped;
@@ -22,9 +26,8 @@ public class KafkaDispatcherImpl implements KafkaService {
     private String ordemTopic;
 
     public void enviarOrdemCompra(OrdemCompra ordemCompra) throws InterruptedException, ExecutionException{
-        producer.send(
-            new ProducerRecord<String,OrdemCompra>(ordemTopic, ordemCompra.getTokenCliente(), ordemCompra)
-        ).get();
+        ProducerRecord<String, OrdemCompra> producerRecord = new ProducerRecord<String,OrdemCompra>(ordemTopic, ordemCompra.getTokenCliente(), ordemCompra);
+        producer.send(producerRecord).get();
     }
     
 }

@@ -92,7 +92,7 @@ public class ProcessaOrdem {
                 if (preco == null) {
                     throw new Exception("Preço não disponível no momento da consulta");
                 }
-                Pedido p = new Pedido(ordemCompra.getTokenCliente(), ativo, ordemCompra.getQuantidade(), preco);
+                Pedido p = new Pedido(ordemCompra.getTokenCliente(), ativo, ordemCompra.getQuantidade(), preco, ordemCompra.getTimestamp());
                 agendarPedido(p);
             } catch (Exception e) {
                 String msg = String.format(
