@@ -40,11 +40,9 @@ public class PedidosSource extends RichSourceFunction<Pedido> {
     @Override
     public void run(SourceContext<Pedido> ctx) throws Exception {
         Logger.getLogger(this.getClass().toString()).info("Coletando Pedidos");
-        while(isRunning){
-            while (!pedidos.isEmpty()){
-                synchronized(ctx.getCheckpointLock()){
-                    ctx.collect(pedidos.poll());
-                }
+        while (isRunning) {
+            while (!pedidos.isEmpty()) {
+                ctx.collect(pedidos.poll());
             }
         }
     }

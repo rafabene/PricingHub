@@ -1,5 +1,6 @@
 package com.rafabene.alarme;
 
+import java.time.Duration;
 import java.time.ZoneOffset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,7 +17,7 @@ import com.rafabene.pedido.dominio.vo.Pedido;
 
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.streaming.api.datastream.DataStream;
-import org.apache.flink.streaming.api.datastream.DataStreamSource;
+import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.windowing.assigners.SlidingEventTimeWindows;
 import org.apache.flink.streaming.api.windowing.time.Time;
@@ -42,21 +43,21 @@ public class FlinkTopology {
         logger.info("Configurando Flink Topology");
         try {
             StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-            PedidosSource cs = new PedidosSource();
-            DataStreamSource<Pedido> pedidosStream = env.addSource(cs);
-            pedidosStream.name("Pedidos");
+            SingleOutputStreamOperator<Pedido> pedidosStream = env
+                .addSource(new PedidosSource())
+                .name("Pedidos");
 
-            WatermarkStrategy<Pedido> watermarkStrategy = WatermarkStrategy.<Pedido>forMonotonousTimestamps()
+            WatermarkStrategy<Pedido> watermarkStrategy = WatermarkStrategy.<Pedido>forBoundedOutOfOrderness(Duration.ofSeconds(10))
                     .withTimestampAssigner(
                         (pedido, timestamp) -> pedido.getTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli()
-                    );
+                    ).withIdleness(Duration.ofSeconds(1));
 
             DataStream<Alarme> alarmes = pedidosStream
                     .assignTimestampsAndWatermarks(watermarkStrategy)
-                    .keyBy(key -> key.getTokenCliente())
+                    .keyBy(pedido -> pedido.getTokenCliente())
                     .window(SlidingEventTimeWindows
                             .of(Time.seconds(janelaTempoSegundos), 
-                                Time.seconds(1)))
+                                Time.seconds(5)))
                     .aggregate(
                         new AggregatePedidos(), 
                         new ProcessaAlarme(limiteValorAlarme, janelaTempoSegundos)
