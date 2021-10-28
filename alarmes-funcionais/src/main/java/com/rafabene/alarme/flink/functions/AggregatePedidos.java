@@ -1,4 +1,6 @@
-package com.rafabene.alarme.flink;
+package com.rafabene.alarme.flink.functions;
+
+import java.util.logging.Logger;
 
 import com.rafabene.pedido.dominio.vo.Pedido;
 
@@ -13,11 +15,15 @@ public class AggregatePedidos implements AggregateFunction<Pedido, Double, Doubl
 
     @Override
     public Double add(Pedido pedido, Double accumulator) {
-        return accumulator + pedido.getPrecoTotal();
+        Logger.getLogger(this.toString()).fine("Pedido para calculo: " + pedido.toString());
+        Double valor = accumulator + pedido.getPrecoTotal();
+        Logger.getLogger(this.toString()).fine("Valor acumulado: " + valor);
+        return valor;
     }
 
     @Override
     public Double getResult(Double accumulator) {
+        Logger.getLogger(this.toString()).fine("Resultado do acumulo de pedidos: " + accumulator);
         return accumulator;
     }
 

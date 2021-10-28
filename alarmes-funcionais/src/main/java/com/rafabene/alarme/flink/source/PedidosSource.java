@@ -1,4 +1,4 @@
-package com.rafabene.alarme.flink;
+package com.rafabene.alarme.flink.source;
 
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -12,6 +12,7 @@ import com.tangosol.util.listener.SimpleMapListener;
 
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.functions.source.RichSourceFunction;
+import org.apache.flink.streaming.api.watermark.Watermark;
 
 public class PedidosSource extends RichSourceFunction<Pedido> {
 
@@ -41,6 +42,7 @@ public class PedidosSource extends RichSourceFunction<Pedido> {
     public void run(SourceContext<Pedido> ctx) throws Exception {
         Logger.getLogger(this.getClass().toString()).info("Coletando Pedidos");
         while (isRunning) {
+            ctx.emitWatermark(new Watermark(System.currentTimeMillis()));
             while (!pedidos.isEmpty()) {
                 ctx.collect(pedidos.poll());
             }

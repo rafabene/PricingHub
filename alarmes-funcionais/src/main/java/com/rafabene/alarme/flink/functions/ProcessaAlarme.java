@@ -1,4 +1,4 @@
-package com.rafabene.alarme.flink;
+package com.rafabene.alarme.flink.functions;
 
 import com.rafabene.alarme.Alarme;
 
@@ -11,7 +11,7 @@ public class ProcessaAlarme extends ProcessWindowFunction<Double, Alarme, String
     private Integer limite;
     private Integer janelaTempoSegundos;
 
-    public ProcessaAlarme(Integer limite, Integer janelaTempoSegundos){
+    public ProcessaAlarme(Integer limite, Integer janelaTempoSegundos) {
         this.limite = limite;
         this.janelaTempoSegundos = janelaTempoSegundos;
     }
@@ -19,13 +19,14 @@ public class ProcessaAlarme extends ProcessWindowFunction<Double, Alarme, String
     @Override
     public void process(String tokenCliente, ProcessWindowFunction<Double, Alarme, String, TimeWindow>.Context context,
             Iterable<Double> elements, Collector<Alarme> out) throws Exception {
-        for (Double valorAcumuladoPedidos : elements) {
-            if (valorAcumuladoPedidos > limite) {
-                Alarme alarme = new Alarme(tokenCliente, valorAcumuladoPedidos, limite, janelaTempoSegundos);
-                out.collect(alarme);
-            }
+        double valorAcumuladoPedidos = 0;
+        for (Double valor : elements) {
+            valorAcumuladoPedidos += valor;
         }
-
+        if (valorAcumuladoPedidos > limite) {
+            Alarme alarme = new Alarme(tokenCliente, valorAcumuladoPedidos, limite, janelaTempoSegundos);
+            out.collect(alarme);
+        }
     }
 
 }

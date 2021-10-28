@@ -1,15 +1,25 @@
 package com.rafabene.alarme;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Locale;
 import java.util.Objects;
 
-public class Alarme {
+public class Alarme implements Serializable {
 
     private String cliente;
     private Double valor;
     private Integer limite;
     private Integer janelaTempoSegundos;
     private LocalDateTime timestamp;
+    private static String MENSAGEM = "%1$tY%1$tm%1$td%1$tH%1$tM%1$tS - "
+            + "Cliente [%2$s] movimentou acima do limite estipulado [R$ %3$d,00] nos ultimos %4$d segundos. "
+            + "Valor movimentado: R$ %5$.2f";
+
+    public static void main(String[] args) {
+        System.out.println(
+                String.format(new Locale("pt", "BR"), MENSAGEM, LocalDateTime.now(), "Cliente X", 50, 10, 123.00));
+    }
 
     public Alarme(String cliente, Double valor, Integer limite, Integer janelaTempoSegundos) {
         this.cliente = cliente;
@@ -24,9 +34,7 @@ public class Alarme {
     }
 
     public String getMensagem() {
-        return String.format(
-            "%1$tY%1$tm%1$td%1$tH%1$tM%1$tS - Cliente [%2$s] movimentou acima do limite estipulado [%3$d] nos ultimos %4$d segundos. Valor movimentado: %5$.2f",
-            timestamp, cliente, limite, janelaTempoSegundos, valor);
+        return String.format(MENSAGEM, timestamp, cliente, limite, janelaTempoSegundos, valor);
     }
 
     @Override
