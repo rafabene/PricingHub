@@ -21,9 +21,9 @@ FROM openjdk:11-jre-slim
 WORKDIR /helidon
 
 # Copy the binary built in the 1st stage
-COPY --from=build /helidon/target/recebepedidos-rest.jar ./
+COPY --from=build /helidon/target/recebepedidos.jar ./
 COPY --from=build /helidon/target/libs ./libs
 
-CMD ["java", "-jar", "recebepedidos-rest.jar"]
+CMD ["java", "-jar", "recebepedidos.jar"]
 
 EXPOSE 8080

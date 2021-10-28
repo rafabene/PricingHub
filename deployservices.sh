@@ -23,13 +23,13 @@ unzip -o download/apache-jmeter-5.4.1.zip -d download
 eval $(minikube -p pricinghub docker-env)
 docker build -t infocadastrais infocadastrais/
 docker build -t precificacao precificacao/
-docker build -t recebepedidos-rest recebepedidos-rest/
+docker build -t recebepedidos recebepedidos/
 docker build -t processador processador/
 docker build -t agendamento-pedidos agendamento-pedidos/
 docker build -t alarmes-funcionais alarmes-funcionais/
 kubectl apply -n pricinghub -f infocadastrais/app.yaml
 kubectl apply -n pricinghub -f precificacao/app.yaml
-kubectl apply -n pricinghub -f recebepedidos-rest/app.yaml
+kubectl apply -n pricinghub -f recebepedidos/app.yaml
 kubectl apply -n pricinghub -f processador/app.yaml
 kubectl apply -n pricinghub -f agendamento-pedidos/app.yaml
 kubectl apply -n pricinghub -f alarmes-funcionais/app.yaml

@@ -17,13 +17,13 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: recebepedidos-rest
+  name: recebepedidos
   labels:
-    app: recebepedidos-rest
+    app: recebepedidos
 spec:
   type: NodePort
   selector:
-    app: recebepedidos-rest
+    app: recebepedidos
   ports:
   - port: 8080
     targetPort: 8080
@@ -32,21 +32,21 @@ spec:
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: recebepedidos-rest
+  name: recebepedidos
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: recebepedidos-rest
+      app: recebepedidos
   template:
     metadata:
       labels:
-        app: recebepedidos-rest
+        app: recebepedidos
         version: v1
     spec:
       containers:
-      - name: recebepedidos-rest
-        image: recebepedidos-rest
+      - name: recebepedidos
+        image: recebepedidos
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
