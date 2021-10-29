@@ -19,6 +19,16 @@ public class OrdemCompra {
 
     private LocalDateTime timestamp = LocalDateTime.now();
 
+    public OrdemCompra() {
+
+    }
+
+    public OrdemCompra(String nomeAtivo, int quantidade, String tokenCliente) {
+        this.nomeAtivo = nomeAtivo;
+        this.quantidade = quantidade;
+        this.tokenCliente = tokenCliente;
+    }
+
     public String getNomeAtivo() {
         return nomeAtivo;
     }
@@ -79,7 +89,9 @@ public class OrdemCompra {
             return false;
         }
         OrdemCompra ordemCompra = (OrdemCompra) o;
-        return Objects.equals(nomeAtivo, ordemCompra.nomeAtivo) && quantidade == ordemCompra.quantidade && Objects.equals(tokenCliente, ordemCompra.tokenCliente) && Objects.equals(timestamp, ordemCompra.timestamp);
+        return Objects.equals(nomeAtivo, ordemCompra.nomeAtivo) && quantidade == ordemCompra.quantidade
+                && Objects.equals(tokenCliente, ordemCompra.tokenCliente)
+                && Objects.equals(timestamp, ordemCompra.timestamp);
     }
 
     @Override
@@ -89,13 +101,8 @@ public class OrdemCompra {
 
     @Override
     public String toString() {
-        return "{" +
-            " nomeAtivo='" + getNomeAtivo() + "'" +
-            ", quantidade='" + getQuantidade() + "'" +
-            ", tokenCliente='" + getTokenCliente() + "'" +
-            ", timestamp='" + getTimestamp() + "'" +
-            "}";
+        return "{" + " nomeAtivo='" + getNomeAtivo() + "'" + ", quantidade='" + getQuantidade() + "'"
+                + ", tokenCliente='" + getTokenCliente() + "'" + ", timestamp='" + getTimestamp() + "'" + "}";
     }
-   
 
 }
