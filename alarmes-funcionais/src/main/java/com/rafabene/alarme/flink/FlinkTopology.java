@@ -1,7 +1,5 @@
 package com.rafabene.alarme.flink;
 
-import java.time.Duration;
-import java.time.ZoneOffset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,12 +16,10 @@ import com.rafabene.alarme.flink.sink.MovimentacaoSink;
 import com.rafabene.alarme.flink.source.PedidosSource;
 import com.rafabene.pedido.dominio.vo.Pedido;
 
-import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.streaming.api.windowing.assigners.SlidingEventTimeWindows;
 import org.apache.flink.streaming.api.windowing.assigners.SlidingProcessingTimeWindows;
 import org.apache.flink.streaming.api.windowing.time.Time;
 import org.eclipse.microprofile.config.Config;

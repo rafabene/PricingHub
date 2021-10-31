@@ -1,176 +1,22 @@
-# Helidon Quickstart MP
+# Alarmes funcionais.
 
-Sample Helidon MP project that includes multiple REST operations.
+Este serviço faz com que o [Apache Flink](https://ci.apache.org/projects/flink/flink-docs-release-1.13/) escute todas as inserções de novos pedidos no cache do Oracle Coherence.
 
-## Build and run
+Caso o valor total do Pedido seja maior que o valor informado na configurção `limiteValorAlarme` dentro da janela de tempo configurado via `janelaTempoSegundos`, um Alarme será emitido.
 
-With JDK11+
-```bash
-mvn package
-java -jar target/alarmes-funcionais.jar
-```
+Esta serviço disponibiliza os seguintes endpoints e suas respectivas funções:
 
-## Exercise the application
+- Lista todos os alarmes previamente emitidos
 
-```
-curl -X GET http://localhost:8080/greet
-{"message":"Hello World!"}
+        Method: GET
+        URL: 8080/alarmes
 
-curl -X GET http://localhost:8080/greet/Joe
-{"message":"Hello Joe!"}
+- Lista o valor movimentado pelo cliente para todas as ordens
 
-curl -X PUT -H "Content-Type: application/json" -d '{"greeting" : "Hola"}' http://localhost:8080/greet/greeting
+        Method: GET
+        URL: 8080/volume/{cliente}
 
-curl -X GET http://localhost:8080/greet/Jose
-{"message":"Hola Jose!"}
-```
+- Escuta todos os alarmes emitidos near "real time"
 
-## Try health and metrics
-
-```
-curl -s -X GET http://localhost:8080/health
-{"outcome":"UP",...
-. . .
-
-# Prometheus Format
-curl -s -X GET http://localhost:8080/metrics
-# TYPE base:gc_g1_young_generation_count gauge
-. . .
-
-# JSON Format
-curl -H 'Accept: application/json' -X GET http://localhost:8080/metrics
-{"base":...
-. . .
-
-```
-
-## Build the Docker Image
-
-```
-docker build -t alarmes-funcionais .
-```
-
-## Start the application with Docker
-
-```
-docker run --rm -p 8080:8080 alarmes-funcionais:latest
-```
-
-Exercise the application as described above
-
-## Deploy the application to Kubernetes
-
-```
-kubectl cluster-info                         # Verify which cluster
-kubectl get pods                             # Verify connectivity to cluster
-kubectl create -f app.yaml                   # Deploy application
-kubectl get pods                             # Wait for quickstart pod to be RUNNING
-kubectl get service helidon-quickstart-mp    # Verify deployed service
-```
-
-Note the PORTs. You can now exercise the application as you did before but use the second
-port number (the NodePort) instead of 8080.
-
-After you’re done, cleanup.
-
-```
-kubectl delete -f app.yaml
-```
-
-## Build a native image with GraalVM
-
-GraalVM allows you to compile your programs ahead-of-time into a native
- executable. See https://www.graalvm.org/docs/reference-manual/aot-compilation/
- for more information.
-
-You can build a native executable in 2 different ways:
-* With a local installation of GraalVM
-* Using Docker
-
-### Local build
-
-Download Graal VM at https://www.graalvm.org/downloads, the version
- currently supported for Helidon is `20.1.0`.
-
-```
-# Setup the environment
-export GRAALVM_HOME=/path
-# build the native executable
-mvn package -Pnative-image
-```
-
-You can also put the Graal VM `bin` directory in your PATH, or pass
- `-DgraalVMHome=/path` to the Maven command.
-
-See https://github.com/oracle/helidon-build-tools/tree/master/helidon-maven-plugin#goal-native-image
- for more information.
-
-Start the application:
-
-```
-./target/alarmes-funcionais
-```
-
-### Multi-stage Docker build
-
-Build the "native" Docker Image
-
-```
-docker build -t alarmes-funcionais-native -f Dockerfile.native .
-```
-
-Start the application:
-
-```
-docker run --rm -p 8080:8080 alarmes-funcionais-native:latest
-```
-
-
-## Build a Java Runtime Image using jlink
-
-You can build a custom Java Runtime Image (JRI) containing the application jars and the JDK modules
-on which they depend. This image also:
-
-* Enables Class Data Sharing by default to reduce startup time.
-* Contains a customized `start` script to simplify CDS usage and support debug and test modes.
-
-You can build a custom JRI in two different ways:
-* Local
-* Using Docker
-
-
-### Local build
-
-```
-# build the JRI
-mvn package -Pjlink-image
-```
-
-See https://github.com/oracle/helidon-build-tools/tree/master/helidon-maven-plugin#goal-jlink-image
- for more information.
-
-Start the application:
-
-```
-./target/alarmes-funcionais-jri/bin/start
-```
-
-### Multi-stage Docker build
-
-Build the JRI as a Docker Image
-
-```
-docker build -t alarmes-funcionais-jri -f Dockerfile.jlink .
-```
-
-Start the application:
-
-```
-docker run --rm -p 8080:8080 alarmes-funcionais-jri:latest
-```
-
-See the start script help:
-
-```
-docker run --rm alarmes-funcionais-jri:latest --help
-```
+        Method: Websocket
+        URL: ws://HOST:8080/alarmes/{cliente}

@@ -3,19 +3,17 @@ package com.rafabene.precificacao;
 
 import javax.enterprise.inject.se.SeContainer;
 import javax.enterprise.inject.spi.CDI;
-import javax.json.JsonObject;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
-import io.helidon.microprofile.server.Server;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import io.helidon.microprofile.server.Server;
 
 class MainTest {
 
@@ -24,6 +22,7 @@ class MainTest {
 
     @BeforeAll
     public static void startTheServer() throws Exception {
+        System.setProperty("carregaPrecoPadrao", "false");
         server = Server.create().start();
         serverUrl = "http://localhost:" + server.port();
     }
@@ -34,8 +33,9 @@ class MainTest {
 
         Response resposta = client
                 .target(serverUrl)
-                .path("preco/B")
+                .path("preco/MA")                
                 .request()
+                .header("token", "qualquer")
                 .get(Response.class);
         Assertions.assertEquals(204, resposta.getStatus());
     }
@@ -47,6 +47,19 @@ class MainTest {
         Response resposta = client
                 .target(serverUrl)
                 .path("preco/MX")
+                .request()
+                .header("token", "qualquer")
+                .get(Response.class);
+        Assertions.assertEquals(406, resposta.getStatus());
+    }
+
+    @Test
+    void testObterPrecoSemToken() {
+        Client client = ClientBuilder.newClient();
+
+        Response resposta = client
+                .target(serverUrl)
+                .path("preco/B")
                 .request()
                 .get(Response.class);
         Assertions.assertEquals(406, resposta.getStatus());

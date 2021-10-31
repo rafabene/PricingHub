@@ -1,7 +1,5 @@
 package com.rafabene.precificacao;
 
-import java.util.logging.Logger;
-
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -20,8 +18,6 @@ public class PrecoResource {
 
     @Inject
     private RepositorioPreco repositorioPreco;
-
-    private Logger logger = Logger.getLogger(this.getClass().getName());
 
     @Path("/{codigo}")
     @PUT

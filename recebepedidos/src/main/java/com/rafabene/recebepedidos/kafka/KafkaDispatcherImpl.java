@@ -1,9 +1,5 @@
 package com.rafabene.recebepedidos.kafka;
 
-import java.nio.charset.Charset;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.concurrent.ExecutionException;
 
 import javax.enterprise.context.RequestScoped;

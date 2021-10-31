@@ -43,6 +43,7 @@ public class InicializadorKafka {
             kafkaProps.put("bootstrap.servers", bootstrapServers);
             kafkaProps.put("key.serializer",StringSerializer.class);
             kafkaProps.put("value.serializer",OrdemCompraSerializer.class);
+            kafkaProps.put("max.block.ms", 500);
             producer = new KafkaProducer<String, OrdemCompra>(kafkaProps);
         }
         return producer;
