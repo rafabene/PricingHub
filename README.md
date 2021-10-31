@@ -14,3 +14,5 @@
         ./deployservices.sh
 
     This will create docker images and deploy the services to kubernetes
+
+
