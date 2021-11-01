@@ -68,6 +68,16 @@ public class AlarmeWebsocket {
                 e.printStackTrace();
             }
         }
+
+        @Override
+        public void  entryUpdated(MapEvent<String, Alarme> evento) {
+            try {
+                sessaoWebSocket.getBasicRemote().sendText(evento.getNewValue().getMensagem());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     class FiltroPorCliente implements Filter<CacheEvent<String, Alarme>> {

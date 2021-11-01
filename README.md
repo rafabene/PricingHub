@@ -8,6 +8,7 @@
        minikube config set cpus 6
        minikube -p pricinghub start
        minikube profile pricinghub
+       minikube addons enable ingress
 
 2. Execute the deployment bash file script.
 

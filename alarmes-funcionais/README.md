@@ -20,3 +20,7 @@ Esta serviço disponibiliza os seguintes endpoints e suas respectivas funções:
 
         Method: Websocket
         URL: ws://HOST:8080/alarmes/{cliente}
+
+O Websocket pode ser monitado usando a ferramenta [websocat](https://github.com/vi/websocat):
+
+        websocat ws://myminikube/alarme/Cliente2
