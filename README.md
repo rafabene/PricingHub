@@ -23,7 +23,7 @@
         $ cd jmeter/
         jmeter$ ./open-jmeter.sh
 
-O JMeter abrirá um [plano de testes](jmeter/PlanoTeste.jmx) que enviará uma [sequência de ordens de compra](jmeter/ordemCompra.csv) para o componente [recebepedidos]().
+O JMeter abrirá um [plano de testes](jmeter/PlanoTeste.jmx) que enviará uma [sequência de ordens de compra](jmeter/ordemCompra.csv) para o componente [recebepedidos](recebepedidos/).
 
 Se você quiser testar individualmente cada endpoint, Também é possível fazê-lo utilizando o `Insomnia` clicando no botão abaixo:
 
